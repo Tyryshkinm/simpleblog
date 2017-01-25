@@ -1,6 +1,6 @@
 <?php
 
-require_once ("connect_db.php");
+require_once("connect_db.php");
 
 if (isset($_POST['register']))
 {
@@ -9,7 +9,7 @@ if (isset($_POST['register']))
     $first_name = $_POST['first_name'];
     $second_name = $_POST['second_name'];
 
-    $query = "SELECT COUNT (username) AS num FROM users WHERE username = :username";  ???
+    $query = "SELECT COUNT (username) AS num FROM users WHERE username = :username";
     $add_user_bd = $connect_bd->prepare($query);
     $add_user_bd->bindValue(':username', $username);
     $add_user_bd->execute();

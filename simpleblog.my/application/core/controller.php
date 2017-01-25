@@ -1,7 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mikhail
- * Date: 23.01.17
- * Time: 17:47
- */
+
+class Controller {
+
+    public $model;
+    public $view;
+
+    function __construct()
+    {
+        $this->view = new View();
+    }
+
+    function action_index()
+    {
+
+    }
+}

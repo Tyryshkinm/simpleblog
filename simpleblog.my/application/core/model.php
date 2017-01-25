@@ -1,7 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mikhail
- * Date: 23.01.17
- * Time: 17:47
- */
+
+class Model
+{
+    public function get_data()
+    {
+        // todo
+    }
+}
