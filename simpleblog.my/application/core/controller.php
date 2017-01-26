@@ -1,10 +1,8 @@
 <?php
 
-class Controller {
-
-    public $model;
+class controller
+{
     public $view;
-
     function __construct()
     {
         $this->view = new View();

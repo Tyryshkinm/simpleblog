@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login</title>
 </head>
 <body>
-
-<form method="post" action="../models/model_login.php">
+<?php echo "Это страница авторизации пользователя".'<br>';?>
+<form method="post" action="../controllers/login_controller.php">
 
     <input type="text" name="username" placeholder="username" required /></br>
     <input type="password" name="password" placeholder="password" required /></br>
