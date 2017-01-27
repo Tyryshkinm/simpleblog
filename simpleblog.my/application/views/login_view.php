@@ -6,7 +6,7 @@
 </head>
 <body>
 <?php echo "Это страница авторизации пользователя".'<br>';?>
-<form method="post" action="../controllers/login_controller.php">
+<form method="post" action="/login/login_user">
 
     <input type="text" name="username" placeholder="username" required /></br>
     <input type="password" name="password" placeholder="password" required /></br>

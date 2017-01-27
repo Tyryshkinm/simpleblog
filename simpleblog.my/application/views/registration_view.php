@@ -6,7 +6,7 @@
 </head>
 <body>
 <?php echo "Это страница регистрации нового пользователя".'<br>';?>
-<form method="post" action="/registration">
+<form method="post" action="/registration/add_user">
     <input type="text" name="username" placeholder="username" required /></br>
     <input type="text" name="first_name" placeholder="first name" required /></br>
     <input type="text" name="second_name" placeholder="second name" required /></br>
