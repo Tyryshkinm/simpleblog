@@ -49,7 +49,6 @@ class model
         $this->username = $data['username'];
         $this->password = $data['password'];
         $this->user_entry();
-        echo "Вы вошли на сайт";
     }
 
     public function user_entry($query = "SELECT id, username, password FROM users WHERE username = :username AND password = :password")
@@ -59,7 +58,7 @@ class model
         $sth->bindValue(':password', $this->password);
         $sth->execute();
         $user = $sth -> fetch(PDO::FETCH_ASSOC);
-        echo $this->password_db = $user['password'];
+        $this->password_db = $user['password'];
         if($user === false)
         {
             die ('Ivalid username or password');
