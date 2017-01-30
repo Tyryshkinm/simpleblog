@@ -1,7 +1,7 @@
 <?php
 
 if (isset($_SESSION['logged_user'])): ?>
-<?php echo "Привет, " . $_SESSION['logged_user'].", вы аторизованы!".'</br>';?>
+<?php echo "Hello, " . $_SESSION['logged_user'].", you are logged!".'</br>';?>
 <a href="/">Home</a>
 <a href="/addpost">Add_post</a>
 <a href="/login/logout_user">Logout</a></br>
@@ -9,7 +9,7 @@ if (isset($_SESSION['logged_user'])): ?>
 
 
 <?php else: ?>
-<?php echo "Вы не авторизованы!".'</br>' ?>
+<?php echo "You are not logged!".'</br>' ?>
 <a href="/">Home</a>
 <a href="/registration">Registration</a>
 <a href="/login">Login</a></br>

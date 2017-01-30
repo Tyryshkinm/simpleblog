@@ -5,7 +5,7 @@
     <title>Main</title>
 </head>
 <body>
-<?php echo "Здесь будет выводится список постов" ?>
+<?php echo "List of posts" ?>
 
 </body>
 </html>

@@ -5,7 +5,7 @@
     <title>Login</title>
 </head>
 <body>
-<?php echo "Это страница авторизации пользователя".'<br>';?>
+
 <form method="post" action="/login/login_user">
 
     <input type="text" name="username" placeholder="username" required /></br>

@@ -14,14 +14,13 @@ class registration_controller extends controller
             $data['password'] = $_POST['password'];
             $data['first_name'] = $_POST['first_name'];
             $data['second_name'] = $_POST['second_name'];
-
+            $data['sex'] = $_POST['sex'];
             if ($data['password'] == $_POST['repeat_password'])
             {
                 $this->model = new Model();
                 $this->model->user_registration($data);
             }
             else echo "Passwords do not match";
-
         }
     }
 }
