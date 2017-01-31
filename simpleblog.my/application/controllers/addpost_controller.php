@@ -4,12 +4,17 @@ class addpost_controller extends controller
 {
     function index()
     {
-        session_start();
         $this->view->generate_view('template_view.php', 'addpost_view.php');
     }
 
-    function addpost()
+    function add()
     {
+        if (isset($_POST['add'])) {
+            $data['title'] = $_POST['post_title'];
+            $data['text'] = $_POST['post_text'];
+            $this->model = new Model();
+            $this->model->post_add($data);
+        }
 
     }
 
