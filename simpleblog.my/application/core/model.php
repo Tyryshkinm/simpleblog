@@ -50,8 +50,6 @@ class model
         $sth->bindValue(':second_name', $this->second_name);
         $sth->bindValue('sex', $this->sex);
         $sth->execute();
-        $sth = NULL;
-        $this->datab = NULL;
     }
 
     public function user_login($data)
@@ -83,45 +81,33 @@ class model
                 die ('Invalid username or password');
             }
         }
-        $sth = NULL;
-        $this->datab = NULL;
     }
 
+    /*считываем */
     public function user_check($query = "SELECT id, username FROM users WHERE username = :username")
     {
         $sth = $this->datab->prepare($query);
         $sth->bindValue(':username', $this->username);
         $sth->execute();
         $user = $sth -> fetch(PDO::FETCH_ASSOC);
-        $this->username_db = $user['username'];
+        echo $this->username_db = $user['username'];
     }
 
-
+    /*добавление поста в бд*/
     public $title;
     public $text;
     public $author;
     public function post_insert()
     {
-        //считываем автора
-        $session_id = $_SESSION['user_id'];
-        $query = "SELECT id, username, first_name, second_name FROM users WHERE id = $session_id";
-        $sth = $this->datab->prepare($query);
-        $sth->execute();
-        $user = $sth -> fetch(PDO::FETCH_ASSOC);
-        $this->first_name = $user['first_name'];
-        $this->second_name = $user['second_name'];
-        $this->author = $this->first_name ." ".$this->second_name;
-        //добавляем пост в бд
         $query = "INSERT INTO posts (title, text, date, author) VALUES (:title, :text, current_timestamp(), :author)";
         $sth = $this->datab->prepare($query);
         $sth->bindValue(':title', $this->title);
         $sth->bindValue(':text', $this->text);
-        $sth->bindValue(':author', $this->author);
+        $sth->bindValue(':author', $_SESSION['user_id']);
         $sth->execute();
-        $sth = NULL;
-        $this->datab = NULL;
     }
 
+    /*добавление поста*/
     public function post_add($data)
     {
         $this->connect_to_db();
@@ -131,20 +117,58 @@ class model
         header('Location: /');
     }
 
+    /*Вывод всех постов на главной странице
     public function post_output()
     {
         $this->connect_to_db();
         $query1 = "SELECT * FROM posts";
-        $query2 = "SELECT COUNT(*) as count FROM posts";
+        $query2 = "SELECT COUNT (*) FROM posts";
         $sth = $this->datab->prepare($query1);
         $sth->execute();
         $posts = $sth -> fetchAll(PDO::FETCH_ASSOC);
+        return $posts;
+    }*/
+
+    public function post_output()
+    {
+        $this->connect_to_db();
+        $query1 = "SELECT COUNT(*) as count FROM posts";
+        $sth = $this->datab->prepare($query1);
+        $sth->execute();
+        $number_of_posts = $sth -> fetchAll(PDO::FETCH_ASSOC);
+        var_dump($number_of_posts);
+        /*for ($i = 0; $i <= $number_of_posts; $i++)
+        {
+            $query2 = "SELECT * FROM posts WHERE id = $i";
+            $sth = $this->datab->prepare($query2);
+            $sth->execute();
+            $posts = $sth -> fetch(PDO::FETCH_ASSOC);
+        }
+        var_dump($posts);*/
+    }
+
+    /*Вывод страницы поста*/
+    public function post_page_output()
+    {
+        $url = explode('/', $_SERVER['REQUEST_URI']);
+        $numpost = $url[2];
+        $this->connect_to_db();
+        $query1 = "SELECT * FROM posts WHERE id = $numpost";
+        $sth = $this->datab->prepare($query1);
+        $sth->execute();
+        $posts = $sth -> fetch(PDO::FETCH_ASSOC);
+        $user_id =  $posts['author'];
+        $query2 = "SELECT first_name, second_name FROM users WHERE id = $user_id";
         $sth = $this->datab->prepare($query2);
         $sth->execute();
-        $rows = $sth -> fetchAll(PDO::FETCH_ASSOC);
-        $result = array_merge($rows, $posts);
-       // return $posts + $rows;
-        return $result;
+        $author = $sth->fetch(PDO::FETCH_ASSOC);
+        $posts = array_merge($posts, $author);
+        return $posts;
+    }
+    /*Вывод страницы пользователя*/
+    public function user_page_output()
+    {
+
     }
 
 }

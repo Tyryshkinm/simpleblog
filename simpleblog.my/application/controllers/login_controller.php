@@ -12,6 +12,7 @@ class login_controller extends controller
         if (isset($_POST['login'])) {
             $data['username'] = $_POST['username'];
             $data['password'] = $_POST['password'];
+            session_regenerate_id();
             $this->model = new Model();
             $this->model->user_login($data);
             header('Location:/');
@@ -20,7 +21,9 @@ class login_controller extends controller
 
     function logout_user()
     {
-        unset($_SESSION['logged_user']->username);
+        unset($_SESSION['logged_user']);
+        unset($_COOKIE[session_name()]);
+        session_regenerate_id();
         session_destroy();
         header('Location:/  ');
     }
