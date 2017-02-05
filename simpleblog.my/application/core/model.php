@@ -60,6 +60,15 @@ class model
         $this->user_entry();
     }
 
+    public function user_logout()
+    {
+        unset($_SESSION['logged_user']);
+        unset($_COOKIE[session_name()]);
+        session_regenerate_id();
+        session_destroy();
+        header('Location:/  ');
+    }
+
     public function user_entry($query = "SELECT id, username, password FROM users WHERE username = :username AND password = :password")
     {
         $sth = $this->datab->prepare($query);
@@ -117,34 +126,38 @@ class model
         header('Location: /');
     }
 
-    /*Вывод всех постов на главной странице
+    /*Вывод всех постов на главной странице*/
     public function post_output()
     {
         $this->connect_to_db();
-        $query1 = "SELECT * FROM posts";
-        $query2 = "SELECT COUNT (*) FROM posts";
-        $sth = $this->datab->prepare($query1);
-        $sth->execute();
-        $posts = $sth -> fetchAll(PDO::FETCH_ASSOC);
-        return $posts;
-    }*/
-
-    public function post_output()
-    {
-        $this->connect_to_db();
+        $all_posts = NULL;
         $query1 = "SELECT COUNT(*) as count FROM posts";
         $sth = $this->datab->prepare($query1);
         $sth->execute();
         $number_of_posts = $sth -> fetchAll(PDO::FETCH_ASSOC);
-        var_dump($number_of_posts);
-        /*for ($i = 0; $i <= $number_of_posts; $i++)
+        $number_of_posts = $number_of_posts[0]['count'];
+        $number_of_posts = $number_of_posts - 1;
+
+        $query2 = "SELECT id FROM posts";
+        $sth = $this->datab->prepare($query2);
+        $sth->execute();
+        $all_id_posts = $sth->fetchAll(PDO::FETCH_ASSOC);
+        for ($i = 0; $i<=$number_of_posts; $i++)
         {
-            $query2 = "SELECT * FROM posts WHERE id = $i";
-            $sth = $this->datab->prepare($query2);
+            $id[$i] = $all_id_posts[$i];
+            $j = $id[$i]['id'];
+            $query3 = "SELECT * FROM posts WHERE id = $j";
+            $sth = $this->datab->prepare($query3);
             $sth->execute();
-            $posts = $sth -> fetch(PDO::FETCH_ASSOC);
+            $posts = $sth->fetch(PDO::FETCH_ASSOC);
+            $author = $posts['author'];
+            $query4 = "SELECT first_name, second_name FROM users WHERE id = $author";
+            $sth = $this->datab->prepare($query4);
+            $sth->execute();
+            $full_author = $sth->fetch(PDO::FETCH_ASSOC);
+            $all_posts[$i] = array_merge($posts, $full_author);
         }
-        var_dump($posts);*/
+        return $all_posts;
     }
 
     /*Вывод страницы поста*/
@@ -165,10 +178,69 @@ class model
         $posts = array_merge($posts, $author);
         return $posts;
     }
+
     /*Вывод страницы пользователя*/
     public function user_page_output()
     {
-
+        $url = explode('/', $_SERVER['REQUEST_URI']);
+        $numuser = $url[2];
+        $this->connect_to_db();
+        $query1 = "SELECT * FROM users WHERE id = $numuser";
+        $sth = $this->datab->prepare($query1);
+        $sth->execute();
+        $user = $sth -> fetch(PDO::FETCH_ASSOC);
+        return $user;
     }
 
+    /*Редактирование поста*/
+    public function post_edit($data)
+    {
+        $title = $data['title'];
+        $text = $data['text'];
+        $url = explode('/', $_SERVER['REQUEST_URI']);
+        $numpost = $url[2];
+        $this->connect_to_db();
+        $query1 = "UPDATE posts SET title = '$title', text = '$text' WHERE id = $numpost";
+        $sth = $this->datab->prepare($query1);
+        $sth->execute();
+        header('Location: /post/'.$numpost.'');
+    }
+
+    public function post_delete()
+    {
+        $url = explode('/', $_SERVER['REQUEST_URI']);
+        $numpost = $url[2];
+        $this->connect_to_db();
+        $query1 = "DELETE FROM posts WHERE id = $numpost";
+        $sth = $this->datab->prepare($query1);
+        $sth->execute();
+        header('Location:/');
+    }
+
+    /*Редактирование юзера*/
+    public function user_edit($data)
+    {
+        $fn = $data['first_name'];
+        $sn = $data['second_name'];
+        $sex = $data['sex'];
+        $pass = $data['password'];
+        $url = explode('/', $_SERVER['REQUEST_URI']);
+        $numuser = $url[2];
+        $this->connect_to_db();
+        $query1 = "UPDATE users SET first_name = '$fn', second_name = '$sn', password = '$pass', sex = '$sex' WHERE id = $numuser";
+        $sth = $this->datab->prepare($query1);
+        $sth->execute();
+    }
+
+    /*Удаление пользователя*/
+    public function user_delete()
+    {
+        $url = explode('/', $_SERVER['REQUEST_URI']);
+        $numuser = $url[2];
+        $this->connect_to_db();
+        $query1 = "DELETE FROM users WHERE id = $numuser";
+        $sth = $this->datab->prepare($query1);
+        $sth->execute();
+        header('Location:/');
+    }
 }

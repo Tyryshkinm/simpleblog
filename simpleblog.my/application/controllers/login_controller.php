@@ -21,10 +21,7 @@ class login_controller extends controller
 
     function logout_user()
     {
-        unset($_SESSION['logged_user']);
-        unset($_COOKIE[session_name()]);
-        session_regenerate_id();
-        session_destroy();
-        header('Location:/  ');
+       $this->model = new Model();
+       $this->model->user_logout();
     }
 }

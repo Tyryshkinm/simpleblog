@@ -5,7 +5,8 @@
     <title>Registration</title>
 </head>
 <body>
-
+<br>
+Registration
 <form method="post" action="/registration/add_user">
     <input type="text" name="username" placeholder="username" required /><br>
     <input type="text" name="first_name" placeholder="first name" required /><br>

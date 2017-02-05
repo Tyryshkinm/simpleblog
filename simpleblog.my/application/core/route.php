@@ -16,6 +16,11 @@ class route
         }
         else $action_name = 'index';
 
+        if (!empty($routes[3]))
+        {
+            $action_name = $routes[3];
+        }
+
         $controller_file = $controller_name.'.php';
         $controller_path = 'application/controllers/'.$controller_file;
         if(file_exists($controller_path))
