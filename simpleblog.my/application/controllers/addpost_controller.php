@@ -20,9 +20,4 @@ class addpost_controller extends controller
         }
         else header('Location:/login');
     }
-
-    function editpost()
-    {
-
-    }
 }

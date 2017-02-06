@@ -50,6 +50,12 @@ class user_controller extends controller
     {
         $this->model = new Model();
         $this->model->user_delete();
-        $this->model->user_logout();
+        //$this->model->user_logout();
+    }
+
+    function set_as_admin()
+    {
+        $this->model = new Model();
+        $this->model->set_as_admin();
     }
 }

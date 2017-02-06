@@ -63,13 +63,14 @@ class model
     public function user_logout()
     {
         unset($_SESSION['logged_user']);
+        unset($_SESSION['user_id']);
         unset($_COOKIE[session_name()]);
         session_regenerate_id();
         session_destroy();
         header('Location:/  ');
     }
 
-    public function user_entry($query = "SELECT id, username, password FROM users WHERE username = :username AND password = :password")
+    public function user_entry($query = "SELECT id, username, password, role FROM users WHERE username = :username AND password = :password")
     {
         $sth = $this->datab->prepare($query);
         $sth->bindValue(':username', $this->username);
@@ -78,6 +79,7 @@ class model
         $user = $sth -> fetch(PDO::FETCH_ASSOC);
         $_SESSION['logged_user'] = $user['username']; //записываем юзернейм и айди при входе на сайт
         $_SESSION['user_id'] = $user['id']; //записываем юзернейм и айди при входе на сайт
+        $_SESSION['role'] = $user['role'];
         $this->password_db = $user['password'];
         if($user === false)
         {
@@ -126,6 +128,12 @@ class model
         header('Location: /');
     }
 
+    /*пагинация*/
+    public function paged_posts()
+    {
+        
+    }
+
     /*Вывод всех постов на главной странице*/
     public function post_output()
     {
@@ -135,18 +143,19 @@ class model
         $sth = $this->datab->prepare($query1);
         $sth->execute();
         $number_of_posts = $sth -> fetchAll(PDO::FETCH_ASSOC);
-        $number_of_posts = $number_of_posts[0]['count'];
-        $number_of_posts = $number_of_posts - 1;
+        $number_of_posts = $number_of_posts[0]['count'];//общее кол-во постов
+      //  $count_show_pages = 10;
+
 
         $query2 = "SELECT id FROM posts";
         $sth = $this->datab->prepare($query2);
         $sth->execute();
         $all_id_posts = $sth->fetchAll(PDO::FETCH_ASSOC);
-        for ($i = 0; $i<=$number_of_posts; $i++)
+        for ($i = $number_of_posts-1; $i>=0; $i--)
         {
             $id[$i] = $all_id_posts[$i];
             $j = $id[$i]['id'];
-            $query3 = "SELECT * FROM posts WHERE id = $j";
+            $query3 = "SELECT id, title, text, date, author FROM posts WHERE id = $j";
             $sth = $this->datab->prepare($query3);
             $sth->execute();
             $posts = $sth->fetch(PDO::FETCH_ASSOC);
@@ -238,9 +247,24 @@ class model
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numuser = $url[2];
         $this->connect_to_db();
-        $query1 = "DELETE FROM users WHERE id = $numuser";
+        $query1 = "DELETE FROM posts WHERE author = $numuser";
         $sth = $this->datab->prepare($query1);
         $sth->execute();
+        $query2 = "DELETE FROM users WHERE id = $numuser";
+        $sth = $this->datab->prepare($query2);
+        $sth->execute();
         header('Location:/');
+    }
+
+    /*Даем права админа юзеру*/
+    public function set_as_admin()
+    {
+        $url = explode('/', $_SERVER['REQUEST_URI']);
+        $numuser = $url[2];
+        $this->connect_to_db();
+        $query1 = "UPDATE users SET role = 1 WHERE id = $numuser";
+        $sth = $this->datab->prepare($query1);
+        $sth->execute();
+        header('Location: /user/'.$numuser.'');
     }
 }

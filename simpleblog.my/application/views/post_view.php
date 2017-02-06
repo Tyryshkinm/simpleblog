@@ -19,7 +19,9 @@ $post = $this->model->post_page_output();
 <b>author: </b><a href="/user/<?=$post['author']?>"><?=$post['first_name'].' '.$post['second_name']?></a><br>
 
 <br>
-<?php if ($_SESSION['user_id'] == $post['author']):?>
+
+<?php if (!empty($_SESSION['logged_user'])):?>
+<?php if ($_SESSION['user_id'] == $post['author'] or $_SESSION['role'] == 1):?>
     <form method="post" action="/post/<?=$post['id']?>/edit">
         <input type="submit" value="Edit post" />
     </form>
@@ -27,7 +29,7 @@ $post = $this->model->post_page_output();
         <input type="submit" value="Delete post"?>
     </form>
 <?php endif;?>
-
+<?php endif;?>
 
 </body>
 </html>
