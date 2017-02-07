@@ -129,9 +129,15 @@ class model
     }
 
     /*пагинация*/
-    public function paged_posts()
+    public $current_page;
+    public $last_page;
+    public function paged_posts($page)
     {
-        
+        $this->current_page = $page;
+    }
+    public function last_page()
+    {
+        return $this->last_page;
     }
 
     /*Вывод всех постов на главной странице*/
@@ -143,19 +149,24 @@ class model
         $sth = $this->datab->prepare($query1);
         $sth->execute();
         $number_of_posts = $sth -> fetchAll(PDO::FETCH_ASSOC);
-        $number_of_posts = $number_of_posts[0]['count'];//общее кол-во постов
-      //  $count_show_pages = 10;
+        $number_of_posts = $number_of_posts[0]['count'];
 
+        $count_show_posts = 10;
+        $this->last_page = ceil($number_of_posts/$count_show_posts);
 
         $query2 = "SELECT id FROM posts";
         $sth = $this->datab->prepare($query2);
         $sth->execute();
         $all_id_posts = $sth->fetchAll(PDO::FETCH_ASSOC);
-        for ($i = $number_of_posts-1; $i>=0; $i--)
+
+        echo "Текущая страница: ".$this->current_page.'<br>';
+        echo "Последняя страница: ".$this->last_page.'<br><br>';
+
+        for ($i = $number_of_posts-1; $i >= 0; $i--)
         {
             $id[$i] = $all_id_posts[$i];
             $j = $id[$i]['id'];
-            $query3 = "SELECT id, title, text, date, author FROM posts WHERE id = $j";
+            $query3 = "SELECT * FROM posts WHERE id = $j";
             $sth = $this->datab->prepare($query3);
             $sth->execute();
             $posts = $sth->fetch(PDO::FETCH_ASSOC);

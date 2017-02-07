@@ -6,12 +6,15 @@ class user_controller extends controller
     {
         $this->model = new Model();
         $this->model->user_page_output();
-        $this->view->generate_view('template_view.php', 'user_view.php');
+        $data = $this->model->user_page_output();
+        $this->view->generate_view('template_view.php', 'user_view.php', $data);
     }
 
     function edit()
     {
-        $this->view->generate_view('template_view.php', 'user_edit_view.php');
+        $this->model = new Model();
+        $data = $this->model->user_page_output();
+        $this->view->generate_view('template_view.php', 'user_edit_view.php', $data);
     }
 
     function save_changes()
