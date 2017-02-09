@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Registration</title>
-</head>
-<body>
 <br>
 Registration
 <form method="post" action="/registration/add_user">
@@ -19,8 +12,4 @@ Registration
         <option value="female">Female</option>
     </select><br><br>
     <input type="submit" name="register" value="Register" />
-
 </form>
-
-</body>
-</html>

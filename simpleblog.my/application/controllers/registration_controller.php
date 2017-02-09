@@ -18,9 +18,24 @@ class registration_controller extends controller
             if ($data['password'] == $_POST['repeat_password'])
             {
                 $this->model = new Model();
-                $this->model->user_registration($data);
+                $user = $this->model->user_check($data);
+                if ($data['username'] == $user['username'])
+                {
+                    $error = "A person with this username already exists";
+                    $this->view->generate_view('template_view.php', 'registration_view.php', $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+                }
+                else
+                {
+                    $this->model->user_registration($data);
+                    $this->view->generate_view('template_view.php', 'login_view.php');
+                }
             }
-            else echo "Passwords do not match";
+            else
+            {
+                $error = "Passwords do not match";
+                $this->view->generate_view('template_view.php', 'registration_view.php', $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+            }
+
         }
     }
 }

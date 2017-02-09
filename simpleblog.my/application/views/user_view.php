@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User</title>
-</head>
-<body>
 <br>
 <?php
-
 echo '<b>'."id: ".'</b>'.$data['id'].'<br>';
 echo '<b>'."username: ".'</b>'.$data['username'].'<br>';
 echo '<b>'."first name: ".'</b>'.$data['first_name'].'<br>';
@@ -32,5 +24,3 @@ echo '<b>'."sex: ".'</b>'.$data['sex'].'<br>';
         </form>
     <?php endif;?>
 <?php endif;?>
-</body>
-</html>

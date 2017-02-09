@@ -9,7 +9,6 @@ class model
     public $sex;
     public $password_db;
     public $username_db;
-    public $error;
     public $datab;
 
     public function connect_to_db($username = 'root', $password = '258789', $host = 'localhost', $dbname = 'simpleblog_db')
@@ -24,40 +23,26 @@ class model
     public function user_registration($data)
     {
         $this->connect_to_db();
-        $this->username = $data['username'];
-        $this->password = $data['password'];
-        $this->first_name = $data['first_name'];
-        $this->second_name = $data['second_name'];
-        $this->sex = $data['sex'];
-        $this->user_check();
-        if ($this->username_db == $data['username'])
-        {
-            echo "A person with this username already exists";
-        }
-        else
-        {
-            $this->insert_user();
-            header('Location:/login');
-        }
-    }
-
-    public function insert_user($query = "INSERT INTO users (username, password, first_name, second_name, sex) VALUES (:username, :password, :first_name, :second_name, :sex)")
-    {
+        $username = $data['username'];
+        $password = $data['password'];
+        $first_name = $data['first_name'];
+        $second_name = $data['second_name'];
+        $sex = $data['sex'];
+        $query = "INSERT INTO users (username, password, first_name, second_name, sex) VALUES ('$username', '$password', '$first_name', '$second_name', '$sex')";
         $sth = $this->datab->prepare($query);
-        $sth->bindValue(':username', $this->username);
-        $sth->bindValue(':password', $this->password);
-        $sth->bindValue(':first_name', $this->first_name);
-        $sth->bindValue(':second_name', $this->second_name);
-        $sth->bindValue('sex', $this->sex);
         $sth->execute();
     }
 
     public function user_login($data)
     {
         $this->connect_to_db();
-        $this->username = $data['username'];
-        $this->password = $data['password'];
-        $this->user_entry();
+        $username = $data['username'];
+        $password = $data['password'];
+        $query = "SELECT id, username, password, role FROM users WHERE username = '$username'";
+        $sth = $this->datab->prepare($query);
+        $sth->execute();
+        $user = $sth -> fetch(PDO::FETCH_ASSOC);
+        return $user;
     }
 
     public function user_logout()
@@ -67,41 +52,18 @@ class model
         unset($_COOKIE[session_name()]);
         session_regenerate_id();
         session_destroy();
-        header('Location:/  ');
-    }
-
-    public function user_entry($query = "SELECT id, username, password, role FROM users WHERE username = :username AND password = :password")
-    {
-        $sth = $this->datab->prepare($query);
-        $sth->bindValue(':username', $this->username);
-        $sth->bindValue(':password', $this->password);
-        $sth->execute();
-        $user = $sth -> fetch(PDO::FETCH_ASSOC);
-        $_SESSION['logged_user'] = $user['username']; //записываем юзернейм и айди при входе на сайт
-        $_SESSION['user_id'] = $user['id']; //записываем юзернейм и айди при входе на сайт
-        $_SESSION['role'] = $user['role'];
-        $this->password_db = $user['password'];
-        if($user === false)
-        {
-            die ('Ivalid username or password');
-        }
-        else {
-            if ($this->password == $this->password_db) {
-                // header('Location:/main');
-            } else {
-                die ('Invalid username or password');
-            }
-        }
     }
 
     /*считываем */
-    public function user_check($query = "SELECT id, username FROM users WHERE username = :username")
+    public function user_check($data)
     {
+        $this->connect_to_db();
+        $new_username = $data['username'];
+        $query = "SELECT username FROM users WHERE username = '$new_username'";
         $sth = $this->datab->prepare($query);
-        $sth->bindValue(':username', $this->username);
         $sth->execute();
         $user = $sth -> fetch(PDO::FETCH_ASSOC);
-        echo $this->username_db = $user['username'];
+        return $user;
     }
 
     /*добавление поста в бд*/
@@ -143,41 +105,26 @@ class model
     /*Вывод всех постов на главной странице*/
     public function post_output()
     {
+        $start = 0+2*($this->current_page-1);
+        $count_show_posts = 2;
         $this->connect_to_db();
-        $all_posts = NULL;
         $query1 = "SELECT COUNT(*) as count FROM posts";
         $sth = $this->datab->prepare($query1);
         $sth->execute();
         $number_of_posts = $sth -> fetchAll(PDO::FETCH_ASSOC);
         $number_of_posts = $number_of_posts[0]['count'];
-
-        $count_show_posts = 10;
-        $this->last_page = ceil($number_of_posts/$count_show_posts);
-
-        $query2 = "SELECT id FROM posts";
+        if ($number_of_posts > 0)
+        {
+            $this->last_page = ceil($number_of_posts/$count_show_posts);
+        }else $this->last_page = 1;
+        $posts = NULL;
+        $query2 = "SELECT posts.id, title, text, date, author, first_name, second_name 
+                  FROM posts INNER JOIN users ON author = users.id ORDER BY date DESC 
+                  LIMIT $start, $count_show_posts";
         $sth = $this->datab->prepare($query2);
         $sth->execute();
-        $all_id_posts = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-        echo "Текущая страница: ".$this->current_page.'<br>';
-        echo "Последняя страница: ".$this->last_page.'<br><br>';
-
-        for ($i = $number_of_posts-1; $i >= 0; $i--)
-        {
-            $id[$i] = $all_id_posts[$i];
-            $j = $id[$i]['id'];
-            $query3 = "SELECT * FROM posts WHERE id = $j";
-            $sth = $this->datab->prepare($query3);
-            $sth->execute();
-            $posts = $sth->fetch(PDO::FETCH_ASSOC);
-            $author = $posts['author'];
-            $query4 = "SELECT first_name, second_name FROM users WHERE id = $author";
-            $sth = $this->datab->prepare($query4);
-            $sth->execute();
-            $full_author = $sth->fetch(PDO::FETCH_ASSOC);
-            $all_posts[$i] = array_merge($posts, $full_author);
-        }
-        return $all_posts;
+        $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
+        return $posts;
     }
 
     /*Вывод страницы поста*/
@@ -258,9 +205,6 @@ class model
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numuser = $url[2];
         $this->connect_to_db();
-        $query1 = "DELETE FROM posts WHERE author = $numuser";
-        $sth = $this->datab->prepare($query1);
-        $sth->execute();
         $query2 = "DELETE FROM users WHERE id = $numuser";
         $sth = $this->datab->prepare($query2);
         $sth->execute();
