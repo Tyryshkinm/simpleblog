@@ -4,7 +4,6 @@ class user_controller extends controller
 {
     function index()
     {
-        $this->model = new Model();
         $this->model->user_page_output();
         $data = $this->model->user_page_output();
         $this->view->generate_view('template_view.php', 'user_view.php', $data);
@@ -12,14 +11,12 @@ class user_controller extends controller
 
     function edit()
     {
-        $this->model = new Model();
         $data = $this->model->user_page_output();
         $this->view->generate_view('template_view.php', 'user_edit_view.php', $data);
     }
 
     function save_changes()
     {
-        $this->model = new Model();
         $user = $this->model->user_page_output();
         if (isset($_POST['save']))
         {
@@ -30,11 +27,20 @@ class user_controller extends controller
                         $data['first_name'] = $_POST['first_name'];
                         $data['second_name'] = $_POST['second_name'];
                         $data['sex'] = $_POST['sex'];
-                        $this->model = new Model();
                         $this->model->user_edit($data);
                         header('Location:/user/'.$user['id'].'');
-                    } else echo "пароль не совпадают";
-                } else echo "Новый пароль должен отличаться от старого";
+                    }
+                    else
+                    {
+                        $error = "passwords do not match";
+                        $this->view->generate_view('template_view.php', 'registration_view.php', $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+                    }
+                }
+                else
+                {
+                    $error = "The new password must differ from the old";
+                    $this->view->generate_view('template_view.php', 'registration_view.php', $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+                }
             }
             else
             {
@@ -42,7 +48,6 @@ class user_controller extends controller
                 $data['first_name'] = $_POST['first_name'];
                 $data['second_name'] = $_POST['second_name'];
                 $data['sex'] = $_POST['sex'];
-                $this->model = new Model();
                 $this->model->user_edit($data);
                 header('Location:/user/'.$user['id'].'');
             }
@@ -51,14 +56,12 @@ class user_controller extends controller
 
     function delete()
     {
-        $this->model = new Model();
         $this->model->user_delete();
-        //$this->model->user_logout();
+        header('Location:/');
     }
 
     function set_as_admin()
     {
-        $this->model = new Model();
         $this->model->set_as_admin();
     }
 }

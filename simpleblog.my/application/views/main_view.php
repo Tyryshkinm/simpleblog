@@ -10,41 +10,40 @@
 <?php endif;?>
 
 <br>
-<form method="post" action="/">
-    <button formmethod="post" formaction="/" value="1" name="page">first page</button>
-    <?php if ($current_page>5):?>
-        <button formmethod="post" formaction="/" value="<?=$current_page-5;?>" name="page"><?=$current_page-5;?></button>
-    <?php endif;?>
-    <?php if ($current_page>4):?>
-        <button formmethod="post" formaction="/" value="<?=$current_page-4;?>" name="page"><?=$current_page-4;?></button>
-    <?php endif;?>
-    <?php if ($current_page>3):?>
-        <button formmethod="post" formaction="/" value="<?=$current_page-3;?>" name="page"><?=$current_page-3;?></button>
-    <?php endif;?>
-    <?php if ($current_page>2):?>
-        <button formmethod="post" formaction="/" value="<?=$current_page-2;?>" name="page"><?=$current_page-2;?></button>
-    <?php endif;?>
-    <?php if ($current_page>1):?>
-        <button formmethod="post" formaction="/" value="<?=$current_page-1;?>" name="page"><?=$current_page-1;?></button>
-    <?php endif;?>
-    ...
-    <button formmethod="post" formaction="/" value="<?=$current_page;?>" name="page"><?=$current_page;?></button>
-    ...
-    <?php if ($current_page+1 <= $last_page):?>
-        <button formmethod="post" formaction="/" value="<?=$current_page+1;?>" name="page"><?=$current_page+1;?></button>
-    <?php endif;?>
-    <?php if ($current_page+2 <= $last_page):?>
-        <button formmethod="post" formaction="/" value="<?=$current_page+2;?>" name="page"><?=$current_page+2;?></button>
-    <?php endif;?>
-    <?php if ($current_page+3 <= $last_page):?>
-        <button formmethod="post" formaction="/" value="<?=$current_page+3;?>" name="page"><?=$current_page+3;?></button>
-    <?php endif;?>
-    <?php if ($current_page+4 <= $last_page):?>
-        <button formmethod="post" formaction="/" value="<?=$current_page+4;?>" name="page"><?=$current_page+4;?></button>
-    <?php endif;?>
-    <?php if ($current_page+5 <= $last_page):?>
-        <button formmethod="post" formaction="/" value="<?=$current_page+5;?>" name="page"><?=$current_page+5;?></button>
-    <?php endif;?>
-    <button formmethod="post" formaction="/" value="<?=$last_page;?>" name="page">last page</button>
 
-</form>
+
+<a href="/page/1">first page</a>
+<?php if ($current_page>5):?>
+    <a href="/page/<?=$current_page-5?>"><?=$current_page-5?></a>
+<?php endif;?>
+<?php if ($current_page>4):?>
+<a href="/page/<?=$current_page-4?>"><?=$current_page-4?></a>
+<?php endif;?>
+<?php if ($current_page>3):?>
+<a href="/page/<?=$current_page-3?>"><?=$current_page-3?></a>
+<?php endif;?>
+<?php if ($current_page>2):?>
+<a href="/page/<?=$current_page-2?>"><?=$current_page-2?></a>
+<?php endif;?>
+<?php if ($current_page>1):?>
+<a href="/page/<?=$current_page-1?>"><?=$current_page-1?></a>
+<?php endif;?>
+...
+<a href="/page/<?=$current_page?>"><?=$current_page?></a>
+...
+<?php if ($current_page+1<=$last_page):?>
+<a href="/page/<?=$current_page+1?>"><?=$current_page+1?></a>
+<?php endif;?>
+<?php if ($current_page+2<=$last_page):?>
+<a href="/page/<?=$current_page+2?>"><?=$current_page+2?></a>
+<?php endif;?>
+<?php if ($current_page+3<=$last_page):?>
+<a href="/page/<?=$current_page+3?>"><?=$current_page+3?></a>
+<?php endif;?>
+<?php if ($current_page+4<=$last_page):?>
+<a href="/page/<?=$current_page+4?>"><?=$current_page+4?></a>
+<?php endif;?>
+<?php if ($current_page+5<=$last_page):?>
+<a href="/page/<?=$current_page+5?>"><?=$current_page+5?></a>
+<?php endif;?>
+<a href="/page/<?=$last_page?>">last page</a>

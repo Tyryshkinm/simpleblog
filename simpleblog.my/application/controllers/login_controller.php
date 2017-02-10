@@ -13,7 +13,6 @@ class login_controller extends controller
             $data['username'] = $_POST['username'];
             $data['password'] = $_POST['password'];
             session_regenerate_id();
-            $this->model = new Model();
             $user = $this->model->user_login($data);
             if ($user === false)
             {
@@ -41,7 +40,6 @@ class login_controller extends controller
 
     function logout_user()
     {
-        $this->model = new Model();
         $this->model->user_logout();
         header('Location:/');
     }

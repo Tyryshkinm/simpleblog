@@ -17,7 +17,6 @@ class registration_controller extends controller
             $data['sex'] = $_POST['sex'];
             if ($data['password'] == $_POST['repeat_password'])
             {
-                $this->model = new Model();
                 $user = $this->model->user_check($data);
                 if ($data['username'] == $user['username'])
                 {
