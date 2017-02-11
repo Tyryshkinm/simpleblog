@@ -56,12 +56,20 @@ class user_controller extends controller
 
     function delete()
     {
-        $this->model->user_delete();
-        header('Location:/');
+        if ($_SESSION['role'] == 1)
+        {
+            $this->model->user_delete();
+            header('Location:/');
+
+        }
+
     }
 
     function set_as_admin()
     {
-        $this->model->set_as_admin();
+        if ($_SESSION['role'] == 1)
+        {
+            $this->model->set_as_admin();
+        }
     }
 }

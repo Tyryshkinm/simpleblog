@@ -117,8 +117,8 @@ class model
 
     public function post_output($current_page, &$last_page)
     {
-        $start = 0+10*($current_page-1);
-        $count_show_posts = 10;
+        $start = 0+5*($current_page-1);
+        $count_show_posts = 5;
         $db = $this->connect_to_db();
         $query1 = "SELECT COUNT(*) as count FROM posts";
         $sth = $db->prepare($query1);
@@ -167,15 +167,25 @@ class model
         $query1 = "UPDATE posts SET title = '$title', text = '$text' WHERE id = $numpost";
         $sth = $db->prepare($query1);
         $sth->execute();
-        header('Location: /post/'.$numpost.'');
+        header('Location: /post/'.$numpost.'');//перенести в роут, нампост??
     }
 
-    public function post_delete()
+    public function verificationAuthorOfPost(&$numpost)
     {
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numpost = $url[2];
         $db = $this->connect_to_db();
-        $query1 = "DELETE FROM posts WHERE id = $numpost";//перенести в роут, нампост??
+        $query1 = "SELECT author FROM posts WHERE id = $numpost";
+        $sth = $db->prepare($query1);
+        $sth->execute();
+        $author_id = $sth->fetch(PDO::FETCH_ASSOC);
+        return $author_id;
+    }
+
+    public function post_delete($numpost)
+    {
+        $db = $this->connect_to_db();
+        $query1 = "DELETE FROM posts WHERE id = $numpost";
         $sth = $db->prepare($query1);
         $sth->execute();
     }

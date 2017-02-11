@@ -23,7 +23,21 @@ class post_controller extends controller
     }
     function delete()
     {
-        $this->model->post_delete();
-        header('Location:/');
+        if (isset($_SESSION['user_id']))
+        {
+            $author_id = $this->model->verificationAuthorOfPost($numpost);
+            if ($_SESSION['user_id'] == $author_id['author'])
+            {
+                $this->model->post_delete($numpost);
+                header('Location:/');
+            }
+            elseif ($_SESSION['role'] == 1)
+            {
+                $this->model->post_delete($numpost);
+                header('Location:/');
+            }
+            else $error = "You have not permissions";
+            $this->view->generate_view('template_view.php', 'post_view.php', $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+        }
     }
 }
