@@ -117,8 +117,8 @@ class model
 
     public function post_output($current_page, &$last_page)
     {
-        $start = 0+5*($current_page-1);
-        $count_show_posts = 5;
+        $start = 0+10*($current_page-1);
+        $count_show_posts = 10;
         $db = $this->connect_to_db();
         $query1 = "SELECT COUNT(*) as count FROM posts";
         $sth = $db->prepare($query1);

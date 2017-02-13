@@ -34,7 +34,6 @@ class registration_controller extends controller
                 $error = "Passwords do not match";
                 $this->view->generate_view('template_view.php', 'registration_view.php', $data = NULL, $current_page = NULL, $last_page = NULL, $error);
             }
-
         }
     }
 }
