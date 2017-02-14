@@ -8,7 +8,7 @@ class route
         {
             $controller_name = $routes[1].'_controller';
         }
-        else $controller_name = 'main_controller';
+        else $controller_name = 'post_controller';
 
         if (!empty($routes[2]))
         {

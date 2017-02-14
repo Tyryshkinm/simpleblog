@@ -1,6 +1,6 @@
 <div class="registration">
     <p>Registration</p>
-    <form method="post" action="/registration/add_user">
+    <form method="post" action="/user/registration">
         <input type="text" name="username" placeholder="username" required /><br>
         <input type="text" name="first_name" placeholder="first name" required /><br>
         <input type="text" name="second_name" placeholder="second name" required /><br>

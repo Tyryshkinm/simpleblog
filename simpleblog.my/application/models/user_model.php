@@ -1,6 +1,6 @@
 <?php
 
-class login_model extends model
+class user_model extends model
 {
     public function user_check($data)
     {
@@ -8,7 +8,6 @@ class login_model extends model
         $new_username = $data['username'];
         $query = "SELECT username FROM users WHERE username = '$new_username'";
         $sth = $db->prepare($query);
-        //$sth = $this->datab->prepare($query);
         $sth->execute();
         $user = $sth -> fetch(PDO::FETCH_ASSOC);
         return $user;
@@ -38,7 +37,7 @@ class login_model extends model
         return $user;
     }
 
-    public function user_logout()
+    public function user_logout()//Вынести в контроллер
     {
         unset($_SESSION['logged_user']);
         unset($_SESSION['user_id']);

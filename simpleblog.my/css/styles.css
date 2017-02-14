@@ -75,7 +75,7 @@ footer {
 
 .post {
     display: inherit;
-    margin-bottom: 5px;
+    margin-top: 5px;
     padding: 10px 50px 10px 50px;
     border: 1px solid black;
     word-wrap: break-word;

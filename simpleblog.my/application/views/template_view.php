@@ -15,12 +15,12 @@
         <ul>
             <?php if (isset($_SESSION['logged_user'])):?>
                 <li><a href="/">Home</a></li>
-                <li><a href="/addpost">Add post</a></li>
-                <li><a href="/login/logout_user">Logout</a></li>
+                <li><a href="/post/add">Add post</a></li>
+                <li><a href="/user/logout">Logout</a></li>
             <?php else:?>
                 <li><a href="/">Home</a></li>
-                <li><a href="/registration">Registration</a></li>
-                <li><a href="/login">Login</a></li>
+                <li><a href="/user/registration">Registration</a></li>
+                <li><a href="/user/login">Login</a></li>
             <?php endif;?>
         </ul>
         <?php if (isset($_SESSION['logged_user'])):?>

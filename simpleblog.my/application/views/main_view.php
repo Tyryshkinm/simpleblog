@@ -3,8 +3,8 @@
         <?php foreach ($data as $post):?>
             <div class="post">
                 <b>id: </b><?=$post['id'];?><br>
-                <b>titile: </b><a href="/post/<?=$post['id'];?>"><?=$post['title'];?></a><br>
-                <b>text: </b><?=mb_substr($post['text'], 0, 200, 'UTF-8');?>...<a href="/post/<?=$post['id'];?>">read more</a><br>
+                <b>title: </b><a href="/post/<?=$post['id'];?>/view"><?=$post['title'];?></a><br>
+                <b>text: </b><?=mb_substr($post['text'], 0, 200, 'UTF-8');?>...<a href="/post/<?=$post['id'];?>/view">read more</a><br>
                 <b>date: </b><?=$post['date'];?><br>
                 <b>author: </b><a href="/user/<?=$post['author'];?>"><?=$post['first_name'].' '.$post['second_name'];?></a><br>
             </div>

@@ -1,6 +1,6 @@
 <div class="post">
     <b>id: </b><?=$data['id']?><br>
-    <b>titile: </b><?=$data['title']?><br>
+    <b>title: </b><?=$data['title']?><br>
     <b>text: </b><?=$data['text']?><br>
     <b>date: </b><?=$data['date']?><br>
     <b>author: </b><a href="/user/<?=$data['author']?>"><?=$data['first_name'].' '.$data['second_name']?></a><br>

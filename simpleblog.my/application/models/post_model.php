@@ -1,6 +1,6 @@
 <?php
 
-class registration_model extends model
+class post_model extends model
 {
     public function post_add($data)
     {
@@ -65,15 +65,25 @@ class registration_model extends model
         $query1 = "UPDATE posts SET title = '$title', text = '$text' WHERE id = $numpost";
         $sth = $db->prepare($query1);
         $sth->execute();
-        header('Location: /post/'.$numpost.'');
+        header('Location: /post/'.$numpost.'');//перенести в роут, нампост??
     }
 
-    public function post_delete()
+    public function verificationAuthorOfPost(&$numpost)
     {
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numpost = $url[2];
         $db = $this->connect_to_db();
-        $query1 = "DELETE FROM posts WHERE id = $numpost";//перенести в роут, нампост??
+        $query1 = "SELECT author FROM posts WHERE id = $numpost";
+        $sth = $db->prepare($query1);
+        $sth->execute();
+        $author_id = $sth->fetch(PDO::FETCH_ASSOC);
+        return $author_id;
+    }
+
+    public function post_delete($numpost)
+    {
+        $db = $this->connect_to_db();
+        $query1 = "DELETE FROM posts WHERE id = $numpost";
         $sth = $db->prepare($query1);
         $sth->execute();
     }
