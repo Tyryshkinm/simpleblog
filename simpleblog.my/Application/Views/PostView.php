@@ -3,10 +3,10 @@
     <b>title: </b><?=$data['title']?><br>
     <b>text: </b><?=$data['text']?><br>
     <b>date: </b><?=$data['date']?><br>
-    <b>author: </b><a href="/user/<?=$data['author']?>"><?=$data['first_name'].' '.$data['second_name']?></a><br>
+    <b>author: </b><a href="/user/<?=$data['author']?>"><?=$data['firstName'] . ' ' . $data['secondName']?></a><br>
     <br>
-    <?php if (!empty($_SESSION['logged_user'])):?>
-        <?php if ($_SESSION['user_id'] == $data['author'] or $_SESSION['role'] == 1):?>
+    <?php if (!empty($_SESSION['loggedUser'])):?>
+        <?php if ($_SESSION['userId'] == $data['author'] or $_SESSION['role'] == 1):?>
             <form method="post" action="/post/<?=$data['id']?>/edit">
                 <input type="submit" class="btn btn-primary" value="Edit post" />
             </form>

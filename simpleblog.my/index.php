@@ -1,4 +1,4 @@
 <?php
 
 ini_set('display_errors', 1);
-require_once 'application/core/bootstrap.php';
+require_once 'Application/Core/Bootstrap.php';

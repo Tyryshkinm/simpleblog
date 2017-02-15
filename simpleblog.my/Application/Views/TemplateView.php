@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
     <meta charset="UTF-8">
     <title>SimpleBlog</title>
@@ -13,9 +13,10 @@
 <header>
     <nav>
         <ul>
-            <?php if (isset($_SESSION['logged_user'])):?>
+            <?php if (isset($_SESSION['loggedUser'])):?>
                 <li><a href="/">Home</a></li>
-                <li><a href="/post/add">Add post</a></li>
+                <li><a href="/user/myPosts">My Posts</a></li>
+                <li><a href="/post/add">Add Post</a></li>
                 <li><a href="/user/logout">Logout</a></li>
             <?php else:?>
                 <li><a href="/">Home</a></li>
@@ -23,8 +24,8 @@
                 <li><a href="/user/login">Login</a></li>
             <?php endif;?>
         </ul>
-        <?php if (isset($_SESSION['logged_user'])):?>
-            <p><?php echo "Hello, " . $_SESSION['logged_user'].", you are logged!".'</br>';?></p>
+        <?php if (isset($_SESSION['loggedUser'])):?>
+            <p><?php echo 'Hello, ' . $_SESSION['loggedUser'] . ', you are logged!' . '</br>';?></p>
         <?php endif;?>
     </nav>
 
@@ -37,7 +38,7 @@
 </article>
 
 <footer>
-    <?php include 'application/views/'.$content_view;?>
+    <?php include 'Application/Views/' . $contentView;?>
 </footer>
 
 </body>
