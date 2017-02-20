@@ -2,17 +2,28 @@
 
 class PostController extends Controller
 {
-    //index()
     public function index()
     {
-        $data = $this->postModel->postOutput($currentPage = 1, $lastPage);
-        $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $currentPage, $lastPage);
+        if (isset($_GET['page'])) {
+            $currentPage = $_GET['page'];
+            $data = $this->postModel->postOutput($currentPage, $lastPage);
+            $this->view->generateView('TemplateView.php', 'PostMainView.php', $data);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
+        } else {
+            $data = $this->postModel->postOutput($currentPage = 1, $lastPage);
+            $this->view->generateView('TemplateView.php', 'PostMainView.php', $data);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
+        }
     }
 
     public function view()
     {
         $data = $this->postModel->postPageOutput();
-        $this->view->generateView('TemplateView.php', 'PostView.php', $data);
+        if (is_array($data)) {
+            $this->view->generateView('TemplateView.php', 'PostView.php', $data);
+        } else {
+            $this->view->generateView('TemplateView.php', '404View.php');
+        }
     }
 
     public function add()
@@ -23,10 +34,8 @@ class PostController extends Controller
                 $data['title'] = $_POST['postTitle'];
                 $data['text'] = $_POST['postText'];
                 $this->postModel->postAdd($data);
-                header('Location:/');
+                Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
             }
-        } else {
-            header('Location:/login');
         }
     }
 
@@ -42,19 +51,17 @@ class PostController extends Controller
                 $this->view->generateView('TemplateView.php', 'PostEditView.php', $data);
             } else {
                 $error = 'You have not permissions';
-                $this->view->generateView('TemplateView.php', '404View.php',
-                    $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+                $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $error);
             }
         } else {
             $error = 'You have not permissions';
-            $this->view->generateView('TemplateView.php', '404View.php',
-                $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+            $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $error);
         }
         if (isset($_POST['save'])) {
             $data['title'] = $_POST['postTitle'];
             $data['text'] = $_POST['postText'];
-            $this->postModel->postEdit($data);
-            header('Location: /post/' . $numpost . '/view');
+            $parametr = $this->postModel->postEdit($data);
+            Route::redirekt($controller = 'post', $action = 'view', $parametr);
         }
     }
 
@@ -67,11 +74,10 @@ class PostController extends Controller
                 header('Location:/');
             } elseif ($_SESSION['role'] == 1) {
                 $this->postModel->postDelete($numpost);
-                header('Location:/');
+                Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
             } else {
                 $error = 'You have not permissions';
-                $this->view->generateView('TemplateView.php', 'PostView.php',
-                    $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+                $this->view->generateView('TemplateView.php', 'PostView.php', $data = NULL, $error);
             }
         }
     }
@@ -80,5 +86,4 @@ class PostController extends Controller
     {
         $this->view->generateView('TemplateView.php', '404View.php');
     }
-
 }

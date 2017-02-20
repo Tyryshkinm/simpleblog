@@ -5,9 +5,12 @@ class UserController extends Controller
     public $error;
     public function index()
     {
-        $this->userModel->userPageOutput();
         $data = $this->userModel->userPageOutput();
-        $this->view->generateView('TemplateView.php', 'UserView.php', $data);
+        if (is_array($data)) {
+            $this->view->generateView('TemplateView.php', 'UserView.php', $data);
+        } else {
+            $this->view->generateView('TemplateView.php', '404View.php');
+        }
     }
 
     public function registration()
@@ -24,14 +27,13 @@ class UserController extends Controller
                     $this->error = 'A person with this username already exists';
                 } else {
                     $this->userModel->userRegistration($data);
-                    header('Location:/user/login');
+                    Route::redirekt($controller = 'user', $action = 'login', $parametr = NULL);
                 }
             } else {
                 $this->error = 'Passwords do not match';
             }
         }
-        $this->view->generateView('TemplateView.php', 'UserRegistrationView.php',
-            $data = NULL, $current_page = NULL, $last_page = NULL, $this->error);
+        $this->view->generateView('TemplateView.php', 'UserRegistrationView.php', $data = NULL, $this->error);
     }
 
     public function login()
@@ -48,20 +50,23 @@ class UserController extends Controller
                     $_SESSION['loggedUser'] = $user['username'];
                     $_SESSION['userId'] = $user['id'];
                     $_SESSION['role'] = $user['role'];
-                    header('Location:/');
+                    Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
                 } else {
                     $this->error = 'Invalid username or password';
                 }
             }
         }
-        $this->view->generateView('TemplateView.php', 'UserLoginView.php',
-            $data = NULL, $current_page = NULL, $last_page = NULL, $this->error);
+        $this->view->generateView('TemplateView.php', 'UserLoginView.php', $data = NULL, $this->error);
     }
 
     public function logout()
     {
-        $this->userModel->userLogout();
-        header('Location:/');
+        unset($_SESSION['loggedUser']);
+        unset($_SESSION['userId']);
+        unset($_COOKIE[session_name()]);
+        session_regenerate_id();
+        session_destroy();
+        Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
     }
 
     public function edit()
@@ -77,13 +82,12 @@ class UserController extends Controller
                 $this->view->generateView('TemplateView.php', 'UserEditView.php', $data);
             } else {
                 $error = 'You have not permissions';
-                $this->view->generateView('TemplateView.php', '404View.php',
-                    $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+                $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $error);
             }
         } else {
             $error = 'You have not permissions';
             $this->view->generateView('TemplateView.php', '404View.php',
-                $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+                $data = NULL, $error);
         }
         //update changes
         $user = $this->userModel->userPageOutput();
@@ -99,13 +103,11 @@ class UserController extends Controller
                         header('Location:/user/' . $user['id'] . '');
                     } else {
                         $error = 'passwords do not match';
-                        $this->view->generateView('TemplateView.php', 'UserRegistrationView.php',
-                            $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+                        $this->view->generateView('TemplateView.php', 'UserRegistrationView.php', $data = NULL, $error);
                     }
                 } else {
                     $error = 'The new password must differ from the old';
-                    $this->view->generateView('TemplateView.php', 'UserRegistrationView.php',
-                        $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+                    $this->view->generateView('TemplateView.php', 'UserRegistrationView.php', $data = NULL, $error);
                 }
             } else {
                 $data['password'] = $user['password'];
@@ -113,7 +115,7 @@ class UserController extends Controller
                 $data['secondName'] = $_POST['secondName'];
                 $data['sex'] = $_POST['sex'];
                 $this->userModel->userEdit($data);
-                header('Location:/user/' . $user['id'] . '');
+                Route::redirekt($controller = 'user', $action = '' . $user['id'] . '', $parametr = NULL);
             }
         }
     }
@@ -125,16 +127,14 @@ class UserController extends Controller
                 $url = explode('/', $_SERVER['REQUEST_URI']);
                 $numuser = $url[2];
                 $this->userModel->userDelete($numuser);
-                header('Location:/');
+                Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
             } else {
                 $error = 'You have not permissions';
-                $this->view->generateView('TemplateView.php', '404View.php',
-                    $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+                $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $error);
             }
         } else {
             $error = 'You have not permissions';
-            $this->view->generateView('TemplateView.php', '404View.php',
-                $data = NULL, $current_page = NULL, $last_page = NULL, $error);
+            $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $error);
         }
     }
 
@@ -142,14 +142,22 @@ class UserController extends Controller
     {
         if ($_SESSION['role'] == 1) {
             $this->userModel->setAsAdmin($numuser);
-            header('Location: /user/' . $numuser . '');
+            Route::redirekt($controller = 'user', $action = '' . $numuser . '', $parametr = NULL);
         }
     }
 
     public function myPosts()
     {
-        $currentPage = 1;
-        $data = $this->userModel->myPosts($currentPage, $lastPage);
-        $this->view->generateView('TemplateView.php', 'MyPostsView.php', $data, $currentPage, $lastPage);
+        $userId = $_SESSION['userId'];
+        if (isset($_GET['page'])) {
+            $currentPage = $_GET['page'];
+            $data = $this->userModel->myPosts($currentPage, $lastPage);
+            $this->view->generateView('TemplateView.php', 'MyPostsView.php', $data);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
+        } else {
+            $data = $this->userModel->myPosts($currentPage = 1, $lastPage);
+            $this->view->generateView('TemplateView.php', 'MyPostsView.php', $data);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
+        }
     }
 }

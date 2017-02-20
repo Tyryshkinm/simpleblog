@@ -15,7 +15,7 @@
         <ul>
             <?php if (isset($_SESSION['loggedUser'])):?>
                 <li><a href="/">Home</a></li>
-                <li><a href="/user/myPosts">My Posts</a></li>
+                <li><a href="/user/<?=$_SESSION['userId'];?>/myPosts">My Posts</a></li>
                 <li><a href="/post/add">Add Post</a></li>
                 <li><a href="/user/logout">Logout</a></li>
             <?php else:?>
@@ -31,11 +31,11 @@
 
 </header>
 
-<article>
+<content>
     <?php if (!empty($error)):?>
         <?=$error;?>
     <?php endif;?>
-</article>
+</content>
 
 <footer>
     <?php include 'Application/Views/' . $contentView;?>

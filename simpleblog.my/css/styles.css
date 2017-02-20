@@ -24,6 +24,7 @@ nav p {
 nav ul li {
     display: flex;
     width: 600px;
+    margin: auto;
     padding: 10px 0px 10px 0px;
     color: #fff;
     background-color: #337ab7;
@@ -50,6 +51,7 @@ nav ul li a {
     text-align: center;
     text-decoration: none;
     color: #fff;
+    margin: auto;
 }
 
 nav ul li a:hover {

@@ -1,28 +1,30 @@
 <?php
-
+require_once(realpath($_SERVER["DOCUMENT_ROOT"]) . '/Application/Models/UserModel.php');
 class PostModel extends model
 {
+    public $postId;
+    public $title;
+    public $text;
+    public $date;
+    public $author;
+
     public function postAdd($data)
     {
         $title = $data['title'];
         $text = $data['text'];
         $authorId = $_SESSION['userId'];
-        $db = $this->connectToDatabase();
         $query = "INSERT INTO posts (title, text, date, author) "
                . "VALUES ('$title', '$text', current_timestamp(), '$authorId')";
-        $sth = $db->prepare($query);
-        $sth->execute();
+        $this->executeQuery($query);
     }
 
     public function postOutput($currentPage, &$lastPage)
     {
-        $start = 0+10*($currentPage-1);
-        $countShowPosts = 10;
-        $db = $this->connectToDatabase();
-        $query1 = "SELECT COUNT(*) as count FROM posts";
-        $sth = $db->prepare($query1);
-        $sth->execute();
-        $numberOfPosts = $sth -> fetchAll(PDO::FETCH_ASSOC);
+        $start = 0+5*($currentPage-1);
+        $countShowPosts = 5;
+        $query = "SELECT COUNT(*) as count FROM posts";
+        $this->executeQuery($query);
+        $numberOfPosts = $this->sth -> fetchAll(PDO::FETCH_ASSOC);
         $numberOfPosts = $numberOfPosts[0]['count'];
         if ($numberOfPosts > 0) {
             $lastPage = ceil($numberOfPosts/$countShowPosts);
@@ -30,12 +32,11 @@ class PostModel extends model
             $lastPage = 1;
         }
         $posts = NULL;
-        $query2 = "SELECT posts.id, title, text, date, author, firstName, secondName "
+        $query = "SELECT posts.id, title, text, date, author, firstName, secondName "
                 . "FROM posts INNER JOIN users ON author = users.id ORDER BY date DESC "
                 . "LIMIT $start, $countShowPosts";
-        $sth = $db->prepare($query2);
-        $sth->execute();
-        $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
+        $this->executeQuery($query);
+        $posts = $this->sth->fetchAll(PDO::FETCH_ASSOC);
         return $posts;
     }
 
@@ -43,17 +44,26 @@ class PostModel extends model
     {
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numpost = $url[2];
-        $db = $this->connectToDatabase();
-        $query1 = "SELECT * FROM posts WHERE id = $numpost";
-        $sth = $db->prepare($query1);
-        $sth->execute();
-        $posts = $sth -> fetch(PDO::FETCH_ASSOC);
+        $query = "SELECT * FROM posts WHERE id = $numpost";
+        $this->executeQuery($query);
+        $posts = $this->sth -> fetch(PDO::FETCH_ASSOC);
         $userId =  $posts['author'];
-        $query2 = "SELECT firstName, secondName FROM users WHERE id = $userId";
-        $sth = $db->prepare($query2);
-        $sth->execute();
-        $author = $sth->fetch(PDO::FETCH_ASSOC);
+        $query = "SELECT firstName, secondName FROM users WHERE id = $userId";
+        $this->executeQuery($query);
+        $author = $this->sth->fetch(PDO::FETCH_ASSOC);
         $posts = array_merge($posts, $author);
+
+        /*
+        $this->postId = $posts['id'];
+        $this->title = $posts ['title'];
+        $this->text = $posts['text'];
+        $this->date = $posts['date'];
+        $this->author = $posts['author'];
+        $this->userModel = new UserModel();
+        $this->userModel->firstName = $posts['firstName'];
+        $this->userModel->secondName = $posts['secondName'];
+        */
+
         return $posts;
     }
 
@@ -63,30 +73,25 @@ class PostModel extends model
         $text = $data['text'];
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numpost = $url[2];
-        $db = $this->connectToDatabase();
-        $query1 = "UPDATE posts SET title = '$title', text = '$text' WHERE id = $numpost";
-        $sth = $db->prepare($query1);
-        $sth->execute();
+        $query = "UPDATE posts SET title = '$title', text = '$text' WHERE id = $numpost";
+        $this->executeQuery($query);
+        return $numpost;
     }
 
     public function verificationAuthorOfPost(&$numpost)
     {
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numpost = $url[2];
-        $db = $this->connectToDatabase();
-        $query1 = "SELECT author FROM posts WHERE id = $numpost";
-        $sth = $db->prepare($query1);
-        $sth->execute();
-        $authorId = $sth->fetch(PDO::FETCH_ASSOC);
+        $query = "SELECT author FROM posts WHERE id = $numpost";
+        $this->executeQuery($query);
+        $authorId = $this->sth->fetch(PDO::FETCH_ASSOC);
         return $authorId;
     }
 
     public function postDelete($numpost)
     {
-        $db = $this->connectToDatabase();
-        $query1 = "DELETE FROM posts WHERE id = $numpost";
-        $sth = $db->prepare($query1);
-        $sth->execute();
+        $query = "DELETE FROM posts WHERE id = $numpost";
+        $this->executeQuery($query);
     }
 }
 

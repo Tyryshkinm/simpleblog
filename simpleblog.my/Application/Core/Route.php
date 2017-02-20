@@ -4,10 +4,14 @@ class Route
     static public function start()
     {
         $routes = explode('/', $_SERVER['REQUEST_URI']);
-        if (!empty($routes[1])) {
-            $controllerName = $routes[1] . 'Controller';
-        } else {
+        if (isset($_GET['page']) and empty($routes[3])) {
             $controllerName = 'PostController';
+        } else {
+            if (!empty($routes[1])) {
+                $controllerName = $routes[1] . 'Controller';
+            } else {
+                $controllerName = 'PostController';
+            }
         }
 
         if (!empty($routes[2])) {
@@ -18,10 +22,19 @@ class Route
 
         if (!empty($routes[3])) {
             $actionName = $routes[3];
+            if (isset($_GET['page'])) {
+                $actionName = stristr($routes[3], '?', true);
+            }
         }
+
+        if (count($routes) > 4) {
+            echo "Почему слетают стили?";
+            $controllerName = 'PostController';
+            $actionName = 'pageNotFound';
+        }
+
         $controllerFile = ucfirst($controllerName) . '.php';
         $controllerPath = 'Application/Controllers/' . $controllerFile;
-
         if(file_exists($controllerPath)) {
             include 'Application/Controllers/' . $controllerFile;
         } else {
@@ -29,6 +42,7 @@ class Route
             $controllerName = 'PostController';
             $actionName = 'pageNotFound';
         }
+
         $controller = new $controllerName;
         $action = $actionName;
 
@@ -37,6 +51,17 @@ class Route
         } else {
             $action = 'index';
             $controller->$action();
+        }
+    }
+
+    static public function redirekt($controller, $action, $parametr)
+    {
+        if ($parametr != NULL) {
+            header('Location:/' . $controller . '/' . $parametr . '/' . $action . '');
+        } elseif (isset($parametr)){
+            header('Location:/' . $controller . '/' . $action . '');
+        } else {
+            header('Location:/');
         }
     }
 }
