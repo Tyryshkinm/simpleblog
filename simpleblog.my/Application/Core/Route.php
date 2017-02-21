@@ -27,10 +27,10 @@ class Route
             }
         }
 
-        if (count($routes) > 4) {
-            echo "Почему слетают стили?";
+        if (!empty($routes[4])) {
             $controllerName = 'PostController';
             $actionName = 'pageNotFound';
+            var_dump($routes);
         }
 
         $controllerFile = ucfirst($controllerName) . '.php';

@@ -73,7 +73,7 @@ class PostModel extends model
         $text = $data['text'];
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numpost = $url[2];
-        $query = "UPDATE posts SET title = '$title', text = '$text' WHERE id = $numpost";
+        $query = "UPDATE posts SET title = '$title', text = '$text', date = date WHERE id = $numpost";
         $this->executeQuery($query);
         return $numpost;
     }

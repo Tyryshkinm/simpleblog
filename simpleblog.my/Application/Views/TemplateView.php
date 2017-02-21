@@ -31,11 +31,11 @@
 
 </header>
 
-<content>
+<section>
     <?php if (!empty($error)):?>
         <?=$error;?>
     <?php endif;?>
-</content>
+</section>
 
 <footer>
     <?php include 'Application/Views/' . $contentView;?>

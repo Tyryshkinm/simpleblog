@@ -5,4 +5,3 @@ require_once 'Controller.php';
 require_once 'Route.php';
 session_start();
 route::start();
-
