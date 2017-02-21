@@ -58,9 +58,11 @@ class Route
     {
         if ($parametr != NULL) {
             header('Location:/' . $controller . '/' . $parametr . '/' . $action . '');
-        } elseif (isset($parametr)){
+        }
+        if ($parametr == NULL) {
             header('Location:/' . $controller . '/' . $action . '');
-        } else {
+        }
+        if ($controller == NULL and $action == NULL) {
             header('Location:/');
         }
     }
