@@ -2,6 +2,7 @@
     <?php
     echo '<b>' . 'id: ' . '</b>' . $data['id'] . '<br>';
     echo '<b>' . 'username: ' . '</b>' . $data['username'] . '<br>';
+    echo '<b>' . 'email: ' . '</b>' . $data['email'] . '<br>';
     echo '<b>' . 'first name: ' . '</b>' . $data['firstName'] . '<br>';
     echo '<b>' . 'second name: ' . '</b>' . $data['secondName'] . '<br>';
     echo '<b>' . 'sex: ' . '</b>' . $data['sex'] . '<br>';

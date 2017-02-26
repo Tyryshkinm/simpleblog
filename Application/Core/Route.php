@@ -16,6 +16,8 @@ class Route
 
         if (!empty($routes[2])) {
             $actionName = $routes[2];
+            if (isset($_GET['token']))
+                $actionName = stristr($routes[2], '?', true);
         } else {
             $actionName = 'index';
         }

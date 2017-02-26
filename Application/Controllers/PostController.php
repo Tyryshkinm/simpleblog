@@ -86,4 +86,19 @@ class PostController extends Controller
     {
         $this->view->generateView('TemplateView.php', '404View.php');
     }
+
+    public function search()
+    {
+        if (isset($_POST['search'])) {
+            $search =   trim($_POST['search']);
+            $data = $this->postModel->search($search);
+            if (!empty($data)) {
+                $this->view->generateView('TemplateView.php', 'SearchView.php', $data);
+            } else {
+                $error = "Nothing found";
+            }
+        } else {
+            $this->view->generateView('TemplateView.php', 'SearchView.php');
+        }
+    }
 }

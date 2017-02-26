@@ -2,6 +2,7 @@
     <p>Registration</p>
     <form method="post" action="/user/registration">
         <input type="text" name="username" placeholder="username" required /><br>
+        <input type="email" name="email" placeholder="email" required /><br>
         <input type="text" name="firstName" placeholder="first name" required /><br>
         <input type="text" name="secondName" placeholder="second name" required /><br>
         <input type="password" name="password" placeholder="password" required /><br>

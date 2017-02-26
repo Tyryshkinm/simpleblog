@@ -5,4 +5,5 @@
         <input type="password" name="password" placeholder="password" required /></br>
         <input type="submit" class="btn btn-primary" name="login" value="Login" />
     </form>
+    <a href="/user/resetPassEmail" >Forgot your password?</a>
 </div>

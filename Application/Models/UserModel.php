@@ -21,12 +21,13 @@ class UserModel extends Model
     public function userRegistration($data)
     {
         $username = $data['username'];
+        $email = $data['email'];
         $password = $data['password'];
         $firstName = $data['firstName'];
         $secondName = $data['secondName'];
         $sex = $data['sex'];
-        $query = "INSERT INTO users (username, password, firstName, secondName, sex) "
-               . "VALUES ('$username', '$password', '$firstName', '$secondName', '$sex')";
+        $query = "INSERT INTO users (username, email, password, firstName, secondName, sex) "
+               . "VALUES ('$username', '$email', '$password', '$firstName', '$secondName', '$sex')";
         $this->executeQuery($query);
     }
 
@@ -41,6 +42,7 @@ class UserModel extends Model
 
     public function userEdit($data)
     {
+        $email = $data['email'];
         $firstName = $data['firstName'];
         $secondName = $data['secondName'];
         $sex = $data['sex'];
@@ -48,8 +50,8 @@ class UserModel extends Model
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numuser = $url[2];
         $query = "UPDATE users "
-                . "SET firstName = '$firstName', secondName = '$secondName', password = '$password', sex = '$sex' "
-                . "WHERE id = $numuser";
+               . "SET email = '$email', firstName = '$firstName', secondName = '$secondName', password = '$password', sex = '$sex' "
+               . "WHERE id = $numuser";
         $this->executeQuery($query);
     }
 
@@ -94,12 +96,32 @@ class UserModel extends Model
         }
         $posts = NULL;
         $query = "SELECT posts.id, title, text, date, author, firstName, secondName "
-                . "FROM posts INNER JOIN users ON author = users.id "
-                . "WHERE author = '$numuser'"
-                . "ORDER BY date DESC "
-                . "LIMIT $start, $countShowPosts";;
+               . "FROM posts INNER JOIN users ON author = users.id "
+               . "WHERE author = '$numuser'"
+               . "ORDER BY date DESC "
+               . "LIMIT $start, $countShowPosts";;
         $this->executeQuery($query);
         $myPosts = $this->sth -> fetchAll(PDO::FETCH_ASSOC);
         return $myPosts;
+    }
+
+    public function insertToken($email, $token)
+    {
+        $query = "UPDATE users SET token = '$token' WHERE email = '$email'";
+        $this->executeQuery($query);
+    }
+
+    public function selectToken($email)
+    {
+        $query = "SELECT token FROM users WHERE email = '$email'";
+        $this->executeQuery($query);
+        $token = $this->sth -> fetch(PDO::FETCH_ASSOC);
+        return $token;
+    }
+
+    public function resetPass($password, $email)
+    {
+        $query = "UPDATE users SET password = $password WHERE email = '$email'";
+        $this->executeQuery($query);
     }
 }

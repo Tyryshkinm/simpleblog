@@ -1,6 +1,7 @@
 <div class="userEdit">
     <p>Edit user: <?=$data['username']?></p>
     <form method="post" action="/user/<?=$data['id']?>/edit">
+        <input type="email" name="email" value="<?=$data['email']?>" placeholder="email" /><br>
         <input type="text" name="firstName" value="<?=$data['firstName']?>" placeholder="first name" /><br>
         <input type="text" name="secondName" value="<?=$data['secondName']?>" placeholder="second name" /><br>
         <input type="password" name="oldPassword" placeholder="old password" /><br>

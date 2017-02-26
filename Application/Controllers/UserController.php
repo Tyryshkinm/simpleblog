@@ -17,6 +17,7 @@ class UserController extends Controller
     {
         if (isset($_POST['register'])) {
             $data['username'] = $_POST['username'];
+            $data['email'] = $_POST['email'];
             $data['password'] = $_POST['password'];
             $data['firstName'] = $_POST['firstName'];
             $data['secondName'] = $_POST['secondName'];
@@ -95,6 +96,7 @@ class UserController extends Controller
             if (!empty($_POST['oldPassword'])) {
                 if ($_POST['oldPassword'] == $user['password']) {
                     if ($_POST['password'] == $_POST['repeatPassword']) {
+                        $data['email'] = $_POST['email'];
                         $data['password'] = $_POST['password'];
                         $data['firstName'] = $_POST['firstName'];
                         $data['secondName'] = $_POST['secondName'];
@@ -110,6 +112,7 @@ class UserController extends Controller
                     $this->view->generateView('TemplateView.php', 'UserRegistrationView.php', $data = NULL, $error);
                 }
             } else {
+                $data['email'] = $_POST['email'];
                 $data['password'] = $user['password'];
                 $data['firstName'] = $_POST['firstName'];
                 $data['secondName'] = $_POST['secondName'];
@@ -148,7 +151,6 @@ class UserController extends Controller
 
     public function myPosts()
     {
-        $userId = $_SESSION['userId'];
         if (isset($_GET['page'])) {
             $currentPage = $_GET['page'];
             $data = $this->userModel->myPosts($currentPage, $lastPage);
@@ -158,6 +160,50 @@ class UserController extends Controller
             $data = $this->userModel->myPosts($currentPage = 1, $lastPage);
             $this->view->generateView('TemplateView.php', 'MyPostsView.php', $data);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
+        }
+    }
+
+    public function resetPassEmail()
+    {
+        $this->view->generateView('TemplateView.php', 'UserForgotPassView.php', $data = NULL, $this->error);
+        if (isset($_POST['send'])) {
+            $token = mt_rand();
+            $email = $_POST['email'];
+            $this->userModel->insertToken($email, $token);
+            $host = $_SERVER['HTTP_HOST'];
+            $to = $email;
+            $subject = 'Reset password on SimbleBlog';
+            $msg = 'You have requested to reset the password on the SimpleBlog.'
+                 . "\r\n" . 'Click the link below to change your password.' . "\r\n"
+                 . "\r\n" . 'http://' . $host . '/user/restorePass?email=' . $email . "&token=" . $token;
+            $header = 'From: SimpleBlog' . "\r\n";
+            mail($to, $subject, $msg, $header);
+        }
+    }
+
+    public function restorePass()
+    {
+        if (isset($_GET['token']) and isset($_GET['email'])) {
+            $this->view->generateView('TemplateView.php', 'UserRestorePassView.php', $data = NULL, $this->error);
+            $email = $_GET['email'];
+            $tokenDb = $this->userModel->selectToken($email);;
+            if ($_GET['token'] == $tokenDb['token']) {
+                if (isset($_POST['submit'])) {
+                    $newPassword  = $_POST['newPassword'];
+                    $rePassword = $_POST['repeatPassword'];
+                    if ($newPassword == $rePassword) {
+                        $this->userModel->resetPass($newPassword, $email);
+                        $this->userModel->insertToken($email, $token = mt_rand());
+                        Route::redirekt($controller = 'user', $action = 'login', $parametr = NULL);
+                    } else {
+                        $this->error = 'passwords do not match';
+                    }
+                }
+            } else {
+                $this->userModel->insertToken($email, $token = mt_rand());
+                $this->error = 'Link is outdated, try again';
+                Route::redirekt($controller = 'user', $action = 'resetPassEmail', $parametr = NULL);
+            }
         }
     }
 }
