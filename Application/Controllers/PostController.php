@@ -7,11 +7,11 @@ class PostController extends Controller
         if (isset($_GET['page'])) {
             $currentPage = $_GET['page'];
             $data = $this->postModel->postOutput($currentPage, $lastPage);
-            $this->view->generateView('TemplateView.php', 'PostMainView.php', $data);
+            $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
         } else {
             $data = $this->postModel->postOutput($currentPage = 1, $lastPage);
-            $this->view->generateView('TemplateView.php', 'PostMainView.php', $data);
+            $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
         }
     }
@@ -50,12 +50,12 @@ class PostController extends Controller
                 $data = $this->postModel->postPageOutput();
                 $this->view->generateView('TemplateView.php', 'PostEditView.php', $data);
             } else {
-                $error = 'You have not permissions';
-                $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $error);
+                $this->view->msgError = 'You have not permissions';
+                $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $this->view->msgError);
             }
         } else {
-            $error = 'You have not permissions';
-            $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $error);
+            $this->view->msgError = 'You have not permissions';
+            $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $this->view->msgError);
         }
         if (isset($_POST['save'])) {
             $data['title'] = $_POST['postTitle'];
@@ -76,8 +76,8 @@ class PostController extends Controller
                 $this->postModel->postDelete($numpost);
                 Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
             } else {
-                $error = 'You have not permissions';
-                $this->view->generateView('TemplateView.php', 'PostView.php', $data = NULL, $error);
+                $this->view->msgError = 'You have not permissions';
+                $this->view->generateView('TemplateView.php', 'PostView.php', $data = NULL, $this->view->msgError);
             }
         }
     }
@@ -90,12 +90,18 @@ class PostController extends Controller
     public function search()
     {
         if (isset($_POST['search'])) {
-            $search =   trim($_POST['search']);
-            $data = $this->postModel->search($search);
-            if (!empty($data)) {
-                $this->view->generateView('TemplateView.php', 'SearchView.php', $data);
+            if (!empty($_POST['search'])) {
+                $search = $_POST['search'];
+                $data = $this->postModel->search($search);
+                if (!empty($data)) {
+                    $this->view->generateView('TemplateView.php', 'SearchView.php', $data);
+                } else {
+                    $this->view->msgError = 'Nothing found';
+                    $this->view->generateView('TemplateView.php', 'SearchView.php', $data, $this->view->msgError);
+                }
             } else {
-                $error = "Nothing found";
+                $this->view->msgError = 'Nothing found';
+                $this->view->generateView('TemplateView.php', 'SearchView.php', $data = NULL, $this->view->msgError);
             }
         } else {
             $this->view->generateView('TemplateView.php', 'SearchView.php');

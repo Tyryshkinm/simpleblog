@@ -2,7 +2,8 @@
 
 class View
 {
-    public function generateView($templateView, $contentView, $data = NULL, $error = NULL)
+    public $msgError;
+    public function generateView($templateView, $contentView, $data = NULL, $msgError = NULL)
     {
         include 'Application/Views/' . $templateView;
     }

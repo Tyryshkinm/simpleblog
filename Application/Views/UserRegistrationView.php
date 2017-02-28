@@ -7,7 +7,6 @@
         <input type="text" name="secondName" placeholder="second name" required /><br>
         <input type="password" name="password" placeholder="password" required /><br>
         <input type="password" name="repeatPassword" placeholder="repeat password" required /><br>
-        sex
         <select name="sex" required>
             <option value="male">Male</option>
             <option value="female">Female</option>

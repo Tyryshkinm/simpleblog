@@ -7,7 +7,6 @@
         <input type="password" name="oldPassword" placeholder="old password" /><br>
         <input type="password" name="password" placeholder="password" /><br>
         <input type="password" name="repeatPassword" placeholder="repeat password" /><br>
-        sex
         <select name="sex" required>
             <?php if ($data['sex']=='male'):?>
                 <option value="male" selected >Male</option>

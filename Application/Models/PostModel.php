@@ -97,7 +97,6 @@ class PostModel extends model
     public function search($search)
     {
         $query = "SELECT id, title FROM posts WHERE title LIKE replace('%$search%', 'chr(194).chr(160)', '')";
-        //$query = "SELECT id, title FROM posts WHERE title LIKE '%$search%'";
         $this->executeQuery($query);
         $searchedTitles = $this->sth->fetchAll(PDO::FETCH_ASSOC);
         return $searchedTitles;

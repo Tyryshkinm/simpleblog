@@ -10,12 +10,6 @@
 </head>
 <body>
 
-<section class="error">
-    <?php if (!empty($error)):?>
-        <?=$error;?>
-    <?php endif;?>
-</section>
-
 <header>
     <nav>
         <?php if (isset($_SESSION['loggedUser'])):?>
@@ -24,20 +18,42 @@
         <ul>
             <?php if (isset($_SESSION['loggedUser'])):?>
                 <li><a href="/">Home</a></li>
-                <li><a href="/post/search">Search</a></li>
                 <li><a href="/user/<?=$_SESSION['userId'];?>/myPosts">My Posts</a></li>
                 <li><a href="/post/add">Add Post</a></li>
                 <li><a href="/user/logout">Logout</a></li>
+                <li>
+                    <div class="search">
+                        <form name="search" method="post" action="/post/search">
+                            <input type="search" name="search" placeholder="Search" required>
+                            <button type="submit" class="btn-xs">Search</button>
+                        </form>
+                    </div>
+                </li>
             <?php else:?>
                 <li><a href="/">Home</a></li>
-                <li><a href="/post/search">Search</a></li>
                 <li><a href="/user/registration">Registration</a></li>
                 <li><a href="/user/login">Login</a></li>
+                <li>
+                    <div class="search">
+                        <form name="search" method="post" action="/post/search">
+                            <input type="search" name="search" placeholder="Search" required>
+                            <button type="submit" class="btn-xs">Search</button>
+                        </form>
+                    </div>
+                </li>
             <?php endif;?>
         </ul>
     </nav>
 
 </header>
+
+
+
+<section class="error">
+    <?php if (!empty($msgError)):?>
+        <?=$msgError;?>
+    <?php endif;?>
+</section>
 
 <footer>
     <?php include 'Application/Views/' . $contentView;?>
