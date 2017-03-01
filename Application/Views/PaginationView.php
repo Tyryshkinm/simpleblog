@@ -34,4 +34,4 @@
         <a href="?page=<?=$currentPage+5?>"><?=$currentPage+5?></a>
     <?php endif;?>
     <a href="?page=<?=$lastPage?>">last page</a>
-</div>/
+</div>

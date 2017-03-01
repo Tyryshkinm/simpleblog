@@ -28,63 +28,76 @@ class PostController extends Controller
 
     public function add()
     {
-        $this->view->generateView('TemplateView.php', 'PostAddView.php');
         if (isset($_SESSION['loggedUser'])) {
+            $this->view->contentView = 'PostAddView.php';
             if (isset($_POST['add'])) {
-                $data['title'] = $_POST['postTitle'];
-                $data['text'] = $_POST['postText'];
-                $this->postModel->postAdd($data);
-                Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
+                $data['title'] = trim($_POST['postTitle']);
+                $data['text'] = trim($_POST['postText']);
+                if (!empty($data['title'])) {
+                    if (!empty($data['text'])) {
+                        $this->postModel->postAdd($data);
+                        Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
+                    } else {
+                        $this->view->contentView = 'PostAddView.php';
+                        $this->view->msgError = 'Textarea is empty!';
+                    }
+                } else {
+                    $this->view->contentView = 'PostAddView.php';
+                    $this->view->msgError = 'Title is empty!';
+                }
             }
+        } else {
+            $this->view->contentView = '404View.php';
         }
+        $this->view->generateView('TemplateView.php', $this->view->contentView, $data = NULL, $this->view->msgError);
     }
 
     public function edit()
     {
         if (isset($_SESSION['userId'])) {
             $authorId = $this->postModel->verificationAuthorOfPost($numpost);
-            if ($_SESSION['userId'] == $authorId['author']) {
-                $data = $this->postModel->postPageOutput();
-                $this->view->generateView('TemplateView.php', 'PostEditView.php', $data);
-            } elseif ($_SESSION['role'] == 1) {
-                $data = $this->postModel->postPageOutput();
-                $this->view->generateView('TemplateView.php', 'PostEditView.php', $data);
+            if ($_SESSION['userId'] == $authorId['author'] or $_SESSION['role'] == 1) {
+                $this->view->data = $this->postModel->postPageOutput();
+                $this->view->contentView = 'PostEditView.php';
+                if (isset($_POST['save'])) {
+                    $data['title'] = trim($_POST['postTitle']);
+                    $data['text'] = trim($_POST['postText']);
+                    if (!empty($data['title'])) {
+                        if (!empty($data['text'])) {
+                            $parametr = $this->postModel->postEdit($data);
+                            Route::redirekt($controller = 'post', $action = 'view', $parametr);
+                        } else {
+                            $this->view->contentView = 'PostEditView.php';
+                            $this->view->msgError = 'Textarea is empty!';
+                        }
+                    } else {
+                        $this->view->contentView = 'PostEditView.php';
+                        $this->view->msgError = 'Title is empty!';
+                    }
+                }
             } else {
-                $this->view->msgError = 'You have not permissions';
-                $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $this->view->msgError);
+                $this->view->contentView = '404View.php';
             }
         } else {
-            $this->view->msgError = 'You have not permissions';
-            $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $this->view->msgError);
+            $this->view->contentView = '404View.php';
         }
-        if (isset($_POST['save'])) {
-            $data['title'] = $_POST['postTitle'];
-            $data['text'] = $_POST['postText'];
-            $parametr = $this->postModel->postEdit($data);
-            Route::redirekt($controller = 'post', $action = 'view', $parametr);
-        }
+        $this->view->generateView('TemplateView.php', $this->view->contentView, $this->view->data, $this->view->msgError);
     }
 
     public function delete()
     {
         if (isset($_SESSION['userId'])) {
             $authorId = $this->postModel->verificationAuthorOfPost($numpost);
-            if ($_SESSION['userId'] == $authorId['author']) {
-                $this->postModel->postDelete($numpost);
-                header('Location:/');
-            } elseif ($_SESSION['role'] == 1) {
+            if ($_SESSION['userId'] == $authorId['author'] or $_SESSION['role'] == 1) {
                 $this->postModel->postDelete($numpost);
                 Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
             } else {
-                $this->view->msgError = 'You have not permissions';
-                $this->view->generateView('TemplateView.php', 'PostView.php', $data = NULL, $this->view->msgError);
+                $this->view->contentView = '404View.php';
             }
+        } else {
+            $this->view->contentView = '404View.php';
         }
-    }
-
-    public function pageNotFound()
-    {
-        $this->view->generateView('TemplateView.php', '404View.php');
+        $this->view->generateView('TemplateView.php', $this->view->contentView);
     }
 
     public function search()

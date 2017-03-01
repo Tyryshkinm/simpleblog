@@ -161,6 +161,10 @@ footer {
     margin-left: 10px;
 }
 
+.registration .button, .login .button, .userEdit .button {
+    margin: 10px;
+}
+
 .pager {
     width: 100%;
     text-align: center;
@@ -218,7 +222,7 @@ footer {
 
 .login, .registration, .userEdit {
     text-align: center;
-    width: 500px;
+    width: 450px;
 }
 
 .postEdit .titleOfPost input[type="text"], .addpost .titleOfPost input[type="text"] {
@@ -250,4 +254,11 @@ textarea{
     resize: none;
     text-align: left;
     padding: 10px;
+}
+
+.pnf {
+    font-family: Tahoma;
+    font-size: 60px;
+    margin: 200px;
+    text-align: center;
 }

@@ -15,7 +15,9 @@
                 <option value="male">Male</option>
                 <option value="female" selected >Female</option>
             <?php endif;?>
-        </select><br><br>
-        <input type="submit" class="btn btn-primary" name="save" value="Save" />
+        </select>
+        <div class="button">
+            <input type="submit" class="btn btn-primary" name="save" value="Save" />
+        </div>
     </form>
 </div>

@@ -2,6 +2,8 @@
 
 class View
 {
+    public $data;
+    public $contentView;
     public $msgError;
     public function generateView($templateView, $contentView, $data = NULL, $msgError = NULL)
     {

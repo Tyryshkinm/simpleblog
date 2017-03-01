@@ -10,7 +10,9 @@
         <select name="sex" required>
             <option value="male">Male</option>
             <option value="female">Female</option>
-        </select><br><br>
-        <input type="submit" class="btn btn-primary" name="register" value="Register" />
+        </select>
+        <div class="button">
+            <input type="submit" class="btn btn-primary" name="register" value="Register" />
+        </div>
     </form>
 </div>

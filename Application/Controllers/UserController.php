@@ -15,22 +15,42 @@ class UserController extends Controller
     public function registration()
     {
         if (isset($_POST['register'])) {
-            $data['username'] = $_POST['username'];
-            $data['email'] = $_POST['email'];
-            $data['password'] = $_POST['password'];
-            $data['firstName'] = $_POST['firstName'];
-            $data['secondName'] = $_POST['secondName'];
             $data['sex'] = $_POST['sex'];
-            if ($data['password'] == $_POST['repeatPassword']) {
-                $user = $this->userModel->userCheck($data);
-                if ($data['username'] == $user['username']) {
-                    $this->view->msgError = 'A person with this username already exists';
+            $data['username'] = trim($_POST['username']);
+            $data['email'] = trim($_POST['email']);
+            $data['firstName'] = trim($_POST['firstName']);
+            $data['secondName'] = trim($_POST['secondName']);
+            $data['password'] = trim($_POST['password']);
+            if (!empty($data['username'])) {
+                if (!empty($data['email'])) {
+                    if (!empty($data['firstName'])) {
+                        if (!empty($data['secondName'])) {
+                            if (!empty($data['password'])) {
+                                if ($data['password'] == $_POST['repeatPassword']) {
+                                    $user = $this->userModel->userCheck($data);
+                                    if ($data['username'] == $user['username']) {
+                                        $this->view->msgError = 'A person with this username already exists';
+                                    } else {
+                                        $this->userModel->userRegistration($data);
+                                        Route::redirekt($controller = 'user', $action = 'login', $parametr = NULL);
+                                    }
+                                } else {
+                                    $this->view->msgError = 'Passwords do not match!';
+                                }
+                            } else {
+                                $this->view->msgError = 'Password is empty!';
+                            }
+                        } else {
+                            $this->view->msgError = 'Second name is empty!';
+                        }
+                    } else {
+                        $this->view->msgError = 'First name is empty!';
+                    }
                 } else {
-                    $this->userModel->userRegistration($data);
-                    Route::redirekt($controller = 'user', $action = 'login', $parametr = NULL);
+                    $this->view->msgError = 'Email is empty!';
                 }
             } else {
-                $this->view->msgError = 'Passwords do not match';
+                $this->view->msgError = 'Username is empty!';
             }
         }
         $this->view->generateView('TemplateView.php', 'UserRegistrationView.php', $data = NULL, $this->view->msgError);
@@ -41,12 +61,12 @@ class UserController extends Controller
         if (isset($_POST['login'])) {
             $data['username'] = $_POST['username'];
             $data['password'] = $_POST['password'];
-            session_regenerate_id();
             $user = $this->userModel->userLogin($data);
             if ($user === false) {
                 $this->view->msgError = 'Invalid username or password';
             } else {
                 if ($data['password'] == $user['password']) {
+                    session_regenerate_id();
                     $_SESSION['loggedUser'] = $user['username'];
                     $_SESSION['userId'] = $user['id'];
                     $_SESSION['role'] = $user['role'];
@@ -71,86 +91,82 @@ class UserController extends Controller
 
     public function edit()
     {
-        $data = $this->userModel->userPageOutput();
-        if (isset($_POST['save'])) {
-            if (!empty($_POST['oldPassword'])) {
-                if ($_POST['oldPassword'] == $data['password']) {
-                    if ($_POST['password'] == $_POST['repeatPassword']) {
-                        if ($_POST['password'] != $_POST['oldPassword']) {
-                            $data['email'] = $_POST['email'];
-                            $data['password'] = $_POST['password'];
-                            $data['firstName'] = $_POST['firstName'];
-                            $data['secondName'] = $_POST['secondName'];
-                            $data['sex'] = $_POST['sex'];
-                            if (!empty($data['password'])) {
-                                $this->userModel->userEdit($data);
-                                header('Location:/user/' . $data['id'] . '');
+        if (isset($_SESSION['userId'])) {
+            $url = explode('/', $_SERVER['REQUEST_URI']);
+            $numuser = $url[2];
+            if ($_SESSION['userId'] == $numuser or $_SESSION['role'] == 1) {
+                $this->view->data = $this->userModel->userPageOutput();
+                $this->view->contentView = 'UserEditView.php';
+                if (isset($_POST['save']))
+                {$data['email'] = trim($_POST['email']);
+                    $data['firstName'] = trim($_POST['firstName']);
+                    $data['secondName'] = trim($_POST['secondName']);
+                    $data['sex'] = $_POST['sex'];
+                    $oldPass = trim($_POST['oldPassword']);
+                    if (!empty($data['email'])) {
+                        if (!empty($data['firstName'])) {
+                            if (!empty($data['secondName'])) {
+                                if (!empty($oldPass)) {
+                                    if ($oldPass == $this->view->data['password']) {
+                                        $data['password'] = trim($_POST['password']);
+                                        if ($data['password'] == $_POST['repeatPassword']) {
+                                            $this->userModel->userEdit($data);
+                                            Route::redirekt($controller = 'user', $action = '' . $this->view->data['id'] . '', $parametr = NULL);
+                                        } else {
+                                            $this->view->contentView = 'UserEditView.php';
+                                            $this->view->msgError = 'Passwords do not match!';
+                                        }
+                                    } else {
+                                        $this->view->contentView = 'UserEditView.php';
+                                        $this->view->msgError = 'Old password is not correct!';
+                                    }
+                                } else {
+                                    $data['password'] = $this->view->data['password'];
+                                    $this->userModel->userEdit($data);
+                                    Route::redirekt($controller = 'user', $action = '' . $this->view->data['id'] . '', $parametr = NULL);
+                                }
                             } else {
-                                $this->view->msgError = 'Password can not be empty';
+                                $this->view->contentView = 'UserEditView.php';
+                                $this->view->msgError = 'Second name is empty!';
                             }
                         } else {
-                            $this->view->msgError = 'The new password must differ from the old';
+                            $this->view->contentView = 'UserEditView.php';
+                            $this->view->msgError = 'First name is empty!';
                         }
-
                     } else {
-                        $this->view->msgError = 'Passwords do not match';
+                        $this->view->contentView = 'UserEditView.php';
+                        $this->view->msgError = 'Email is empty!';
                     }
-                } else {
-                    $this->view->msgError = 'The old password is not correct';
                 }
             } else {
-                $data['email'] = $_POST['email'];
-                $data['firstName'] = $_POST['firstName'];
-                $data['secondName'] = $_POST['secondName'];
-                $data['sex'] = $_POST['sex'];
-                $this->userModel->userEdit($data);
-                Route::redirekt($controller = 'user', $action = '' . $data['id'] . '', $parametr = NULL);
-            }
-        }
-
-        if (isset($_SESSION['userId'])) {
-            $userId['id'] = $data['id'];
-            if ($_SESSION['userId'] == $userId['id']) {
-                $data = $this->userModel->userPageOutput();
-                $this->view->generateView('TemplateView.php', 'UserEditView.php', $data, $this->view->msgError);
-            } elseif ($_SESSION['role'] == 1) {
-                $data = $this->userModel->userPageOutput();
-                $this->view->generateView('TemplateView.php', 'UserEditView.php', $data, $this->view->msgError);
-            } else {
-                $this->view->msgError = 'You have not permissions';
-                $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $this->view->msgError);
+                $this->view->contentView = '404View.php';
             }
         } else {
-            $this->view->msgError = 'You have not permissions';
-            $this->view->generateView('TemplateView.php', '404View.php',
-                $data = NULL, $this->view->msgError);
+            $this->view->contentView = '404View.php';
         }
+        $data = $this->view->data;
+        $this->view->generateView('TemplateView.php', $this->view->contentView, $data, $this->view->msgError);
     }
 
     public function delete()
     {
-        if (isset($_SESSION['role'])) {
-            if ($_SESSION['role'] == 1) {
-                $url = explode('/', $_SERVER['REQUEST_URI']);
-                $numuser = $url[2];
-                $this->userModel->userDelete($numuser);
-                Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
-            } else {
-                $this->view->msgError = 'You have not permissions';
-                $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $this->view->msgError);
-            }
+        if (isset($_SESSION['role']) and $_SESSION['role'] == 1) {
+            $url = explode('/', $_SERVER['REQUEST_URI']);
+            $numuser = $url[2];
+            $this->userModel->userDelete($numuser);
+            Route::redirekt($controller = NULL, $action = NULL, $parametr = NULL);
         } else {
-            $this->view->msgError = 'You have not permissions';
-            $this->view->generateView('TemplateView.php', '404View.php', $data = NULL, $this->view->msgError);
+            $this->view->generateView('TemplateView.php', '404View.php');
         }
     }
 
     public function setAsAdmin()
     {
-        if ($_SESSION['role'] == 1) {
+        if (isset($_SESSION['role']) and $_SESSION['role'] == 1) {
             $this->userModel->setAsAdmin($numuser);
             Route::redirekt($controller = 'user', $action = '' . $numuser . '', $parametr = NULL);
         }
+        $this->view->generateView('TemplateView.php', '404View.php');
     }
 
     public function myPosts()
@@ -178,8 +194,8 @@ class UserController extends Controller
             $to = $email;
             $subject = 'Reset password on SimbleBlog';
             $msg = 'You have requested to reset the password on the SimpleBlog.'
-                 . "\r\n" . 'Click the link below to change your password.' . "\r\n"
-                 . "\r\n" . 'http://' . $host . '/user/restorePass?email=' . $email . "&token=" . $token;
+                . "\r\n" . 'Click the link below to change your password.' . "\r\n"
+                . "\r\n" . 'http://' . $host . '/user/restorePass?email=' . $email . "&token=" . $token;
             $headers  = "Content-type: text/plain; charset = UTF-8 \r\n";
             $headers .= "From: SimpleBlog <supp@simpleblog>\r\n";
             mail($to, $subject, $msg, $headers);
