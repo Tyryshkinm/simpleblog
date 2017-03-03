@@ -2,20 +2,21 @@
 require_once(realpath($_SERVER["DOCUMENT_ROOT"]) . '/Application/Models/PostModel.php');
 class UserModel extends Model
 {
-    public $userId;
-    public $username;
-    public $password;
-    public $firstName;
-    public $secondName;
-    public $sex;
-
     public function userCheck($data)
     {
         $newUsername = $data['username'];
-        $query = "SELECT username FROM users WHERE username = $newUsername";
+        $query = "SELECT username FROM users WHERE username = '$newUsername'";
         $this->executeQuery($query);
         $user = $this->sth -> fetch(PDO::FETCH_ASSOC);
         return $user;
+    }
+
+    public function userCheckEmail($email)
+    {
+        $query = "SELECT email FROM users WHERE email = '$email'";
+        $this->executeQuery($query);
+        $emailBd = $this->sth->fetch(PDO::FETCH_ASSOC);
+        return $emailBd;
     }
 
     public function userRegistration($data)
@@ -50,7 +51,8 @@ class UserModel extends Model
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numuser = $url[2];
         $query = "UPDATE users "
-               . "SET email = '$email', firstName = '$firstName', secondName = '$secondName', password = '$password', sex = '$sex' "
+               . "SET email = '$email', firstName = '$firstName', secondName = '$secondName', "
+               . " password = '$password', sex = '$sex' "
                . "WHERE id = $numuser";
         $this->executeQuery($query);
     }
@@ -79,12 +81,12 @@ class UserModel extends Model
         return $user;
     }
 
-    public function myPosts($currentPage, &$lastPage)
+    public function myPosts($currentPage, &$lastPage, $amt)
     {
         $url = explode('/', $_SERVER['REQUEST_URI']);
         $numuser = $url[2];
-        $start = 0+5*($currentPage-1);
-        $countShowPosts = 5;
+        $start = 0 + $amt * ($currentPage - 1);
+        $countShowPosts = $amt;
         $query = "SELECT COUNT(*) as count FROM posts WHERE author = '$numuser'";
         $this->executeQuery($query);
         $numberOfPosts = $this->sth -> fetchAll(PDO::FETCH_ASSOC);
@@ -121,7 +123,7 @@ class UserModel extends Model
 
     public function resetPass($password, $email)
     {
-        $query = "UPDATE users SET password = $password WHERE email = '$email'";
+        $query = "UPDATE users SET password = '$password' WHERE email = '$email'";
         $this->executeQuery($query);
     }
 }

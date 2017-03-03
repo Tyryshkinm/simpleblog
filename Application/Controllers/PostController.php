@@ -4,15 +4,30 @@ class PostController extends Controller
 {
     public function index()
     {
-        if (isset($_GET['page'])) {
+        if (isset($_GET['page']) and !isset($_GET['amt'])) {
             $currentPage = $_GET['page'];
-            $data = $this->postModel->postOutput($currentPage, $lastPage);
+            $data = $this->postModel->postOutput($currentPage, $lastPage, $amt = 10);
             $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
-            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
-        } else {
-            $data = $this->postModel->postOutput($currentPage = 1, $lastPage);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
+        }
+
+        if (isset($_GET['page']) and  isset($_GET['amt'])) {
+            $currentPage = $_GET['page'];
+            $data = $this->postModel->postOutput($currentPage, $lastPage, $amt = $_GET['amt']);
             $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
-            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
+        }
+
+        if (!isset($_GET['page']) and isset($_GET['amt'])) {
+            $data = $this->postModel->postOutput($currentPage = 1, $lastPage, $amt = $_GET['amt']);
+            $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
+        }
+
+        if (!isset($_GET['page']) and  !isset($_GET['amt'])) {
+            $data = $this->postModel->postOutput($currentPage = 1, $lastPage, $amt = 10);
+            $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
         }
     }
 

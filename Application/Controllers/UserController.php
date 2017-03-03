@@ -31,6 +31,7 @@ class UserController extends Controller
                                     if ($data['username'] == $user['username']) {
                                         $this->view->msgError = 'A person with this username already exists';
                                     } else {
+                                        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
                                         $this->userModel->userRegistration($data);
                                         Route::redirekt($controller = 'user', $action = 'login', $parametr = NULL);
                                     }
@@ -60,12 +61,11 @@ class UserController extends Controller
     {
         if (isset($_POST['login'])) {
             $data['username'] = $_POST['username'];
-            $data['password'] = $_POST['password'];
             $user = $this->userModel->userLogin($data);
             if ($user === false) {
                 $this->view->msgError = 'Invalid username or password';
             } else {
-                if ($data['password'] == $user['password']) {
+                if ($data['password'] == password_verify($data['password'], $user['password'])) {
                     session_regenerate_id();
                     $_SESSION['loggedUser'] = $user['username'];
                     $_SESSION['userId'] = $user['id'];
@@ -107,11 +107,13 @@ class UserController extends Controller
                         if (!empty($data['firstName'])) {
                             if (!empty($data['secondName'])) {
                                 if (!empty($oldPass)) {
-                                    if ($oldPass == $this->view->data['password']) {
+                                    if ($oldPass == password_verify($oldPass, $this->view->data['password'])) {
                                         $data['password'] = trim($_POST['password']);
                                         if ($data['password'] == $_POST['repeatPassword']) {
+                                            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
                                             $this->userModel->userEdit($data);
-                                            Route::redirekt($controller = 'user', $action = '' . $this->view->data['id'] . '', $parametr = NULL);
+                                            Route::redirekt($controller = 'user', $action = '' . $this->view->data['id']
+                                                                        . '', $parametr = NULL);
                                         } else {
                                             $this->view->contentView = 'UserEditView.php';
                                             $this->view->msgError = 'Passwords do not match!';
@@ -123,7 +125,8 @@ class UserController extends Controller
                                 } else {
                                     $data['password'] = $this->view->data['password'];
                                     $this->userModel->userEdit($data);
-                                    Route::redirekt($controller = 'user', $action = '' . $this->view->data['id'] . '', $parametr = NULL);
+                                    Route::redirekt($controller = 'user', $action = '' . $this->view->data['id']
+                                                                                  . '', $parametr = NULL);
                                 }
                             } else {
                                 $this->view->contentView = 'UserEditView.php';
@@ -171,35 +174,56 @@ class UserController extends Controller
 
     public function myPosts()
     {
-        if (isset($_GET['page'])) {
+        if (isset($_GET['page']) and !isset($_GET['amt'])) {
             $currentPage = $_GET['page'];
-            $data = $this->userModel->myPosts($currentPage, $lastPage);
+            $data = $this->userModel->myPosts($currentPage, $lastPage, $amt = 10);
             $this->view->generateView('TemplateView.php', 'MyPostsView.php', $data);
-            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
-        } else {
-            $data = $this->userModel->myPosts($currentPage = 1, $lastPage);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
+        }
+
+        if (isset($_GET['page']) and  isset($_GET['amt'])) {
+            $currentPage = $_GET['page'];
+            $data = $this->userModel->myPosts($currentPage, $lastPage, $amt = $_GET['amt']);
             $this->view->generateView('TemplateView.php', 'MyPostsView.php', $data);
-            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
+        }
+
+        if (!isset($_GET['page']) and isset($_GET['amt'])) {
+            $data = $this->userModel->myPosts($currentPage = 1, $lastPage, $amt = $_GET['amt']);
+            $this->view->generateView('TemplateView.php', 'MyPostsView.php', $data);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
+        }
+
+        if (!isset($_GET['page']) and  !isset($_GET['amt'])) {
+            $data = $this->userModel->myPosts($currentPage = 1, $lastPage, $amt = 10);
+            $this->view->generateView('TemplateView.php', 'MyPostsView.php', $data);
+            $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
         }
     }
 
     public function resetPassEmail()
     {
-        $this->view->generateView('TemplateView.php', 'UserForgotPassView.php', $data = NULL, $this->view->msgError);
         if (isset($_POST['send'])) {
-            $token = mt_rand();
             $email = $_POST['email'];
-            $this->userModel->insertToken($email, $token);
-            $host = $_SERVER['HTTP_HOST'];
-            $to = $email;
-            $subject = 'Reset password on SimbleBlog';
-            $msg = 'You have requested to reset the password on the SimpleBlog.'
-                . "\r\n" . 'Click the link below to change your password.' . "\r\n"
-                . "\r\n" . 'http://' . $host . '/user/restorePass?email=' . $email . "&token=" . $token;
-            $headers  = "Content-type: text/plain; charset = UTF-8 \r\n";
-            $headers .= "From: SimpleBlog <supp@simpleblog>\r\n";
-            mail($to, $subject, $msg, $headers);
+            $emailBd['email'] = $this->userModel->userCheckEmail($email);
+            if(!empty($emailBd['email'])) {
+                $token = mt_rand();
+                $this->userModel->insertToken($email, $token);
+                $host = $_SERVER['HTTP_HOST'];
+                $to = $email;
+                $subject = 'Reset password on SimbleBlog';
+                $msg = 'You have requested to reset the password on the SimpleBlog.'
+                    . "\r\n" . 'Click the link below to change your password.' . "\r\n"
+                    . "\r\n" . 'http://' . $host . '/user/restorePass?email=' . $email . "&token=" . $token;
+                $headers  = "Content-type: text/plain; charset = UTF-8 \r\n";
+                $headers .= "From: SimpleBlog <supp@simpleblog>\r\n";
+                mail($to, $subject, $msg, $headers);
+                $this->view->msgError = "A letter sent to " . $email;
+            } else {
+                $this->view->msgError = "Invalid email";
+            }
         }
+        $this->view->generateView('TemplateView.php', 'UserForgotPassView.php', $data = NULL, $this->view->msgError);
     }
 
     public function restorePass()
@@ -213,6 +237,7 @@ class UserController extends Controller
                     $newPassword  = $_POST['newPassword'];
                     $rePassword = $_POST['repeatPassword'];
                     if ($newPassword == $rePassword) {
+                        $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
                         $this->userModel->resetPass($newPassword, $email);
                         $this->userModel->insertToken($email, $token = mt_rand());
                         Route::redirekt($controller = 'user', $action = 'login', $parametr = NULL);

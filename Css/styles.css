@@ -170,7 +170,7 @@ footer {
     text-align: center;
 }
 
-.pager a {
+.pager a, .pager input {
     display: inline-block;
     padding: 01px 15px;
     text-decoration: none;
@@ -261,4 +261,25 @@ textarea{
     font-size: 60px;
     margin: 200px;
     text-align: center;
+}
+
+.pager .amt {
+    width: auto;
+    text-align: center;
+    display: inline-flex;
+    margin-top: 10px;
+}
+
+.pager .amt p {
+    font-family: Tahoma;
+    font-size: 16px;
+}
+
+.pager .amt select {
+    height: 25px;
+    width: 40px;
+    margin-left: 5px;
+    background-color: #337ab7;
+    border-color: #204d74;
+    color: white;
 }

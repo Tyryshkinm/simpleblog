@@ -2,12 +2,6 @@
 require_once(realpath($_SERVER["DOCUMENT_ROOT"]) . '/Application/Models/UserModel.php');
 class PostModel extends model
 {
-    public $postId;
-    public $title;
-    public $text;
-    public $date;
-    public $author;
-
     public function postAdd($data)
     {
         $title = $data['title'];
@@ -18,10 +12,10 @@ class PostModel extends model
         $this->executeQuery($query);
     }
 
-    public function postOutput($currentPage, &$lastPage)
+    public function postOutput($currentPage, &$lastPage, $amt)
     {
-        $start = 0+5*($currentPage-1);
-        $countShowPosts = 5;
+        $start = 0 + $amt * ($currentPage - 1);
+        $countShowPosts = $amt;
         $query = "SELECT COUNT(*) as count FROM posts";
         $this->executeQuery($query);
         $numberOfPosts = $this->sth -> fetchAll(PDO::FETCH_ASSOC);
@@ -52,18 +46,6 @@ class PostModel extends model
         $this->executeQuery($query);
         $author = $this->sth->fetch(PDO::FETCH_ASSOC);
         $posts = array_merge($posts, $author);
-
-        /*
-        $this->postId = $posts['id'];
-        $this->title = $posts ['title'];
-        $this->text = $posts['text'];
-        $this->date = $posts['date'];
-        $this->author = $posts['author'];
-        $this->userModel = new UserModel();
-        $this->userModel->firstName = $posts['firstName'];
-        $this->userModel->secondName = $posts['secondName'];
-        */
-
         return $posts;
     }
 

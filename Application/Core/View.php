@@ -10,7 +10,7 @@ class View
         include 'Application/Views/' . $templateView;
     }
 
-    public function generatePagination($paginationView, $currentPage = NULL, $lastPage = NULL, $url = NULL)
+    public function generatePagination($paginationView, $currentPage = NULL, $lastPage = NULL, $url = NULL, $amt = NULL)
     {
         include 'Application/Views/' . $paginationView;
     }
