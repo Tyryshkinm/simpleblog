@@ -61,6 +61,7 @@ class UserController extends Controller
     {
         if (isset($_POST['login'])) {
             $data['username'] = $_POST['username'];
+            $data['password'] = $_POST['password'];
             $user = $this->userModel->userLogin($data);
             if ($user === false) {
                 $this->view->msgError = 'Invalid username or password';

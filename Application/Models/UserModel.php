@@ -7,7 +7,7 @@ class UserModel extends Model
         $newUsername = $data['username'];
         $query = "SELECT username FROM users WHERE username = '$newUsername'";
         $this->executeQuery($query);
-        $user = $this->sth -> fetch(PDO::FETCH_ASSOC);
+        $user = $this -> sth -> fetch(PDO::FETCH_ASSOC);
         return $user;
     }
 

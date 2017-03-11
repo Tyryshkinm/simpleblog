@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>SimpleBlog</title>
-    <link rel="stylesheet" href="../../Css/styles.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="../../bootstrap-3.3.2-dist/css/bootstrap.css">
-    <script src="../../bootstrap-3.3.2-dist/js/bootstrap.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../../Assets/css/styles.css" />
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.js"
+            integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+            crossorigin="anonymous">
+    </script>
+    <script src="../../Assets/js/likes.js"></script>
+    <link rel="stylesheet" href="../../Assets/bootstrap-3.3.2-dist/css/bootstrap.css">
+    <script src="../../Assets/bootstrap-3.3.2-dist/js/bootstrap.js" type="text/javascript"></script>
 </head>
 <body>
 

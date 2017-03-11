@@ -113,6 +113,7 @@ footer {
 }
 
 .post .authorAndDate {
+    margin: 10px 10px 10px auto;
     display: flex;
 }
 
@@ -122,11 +123,70 @@ footer {
 
 .post {
     width: 1000px;
-    display: inherit;
     margin: 5px auto auto auto;
-    padding: 0px 100px 10px 100px;
+    padding: 20px 50px 20px 50px;
     word-wrap: break-word;
     border: 1px solid #337ab7;
+}
+
+.content{
+    margin: 10px;
+    display: block;
+}
+
+.title a:hover {
+    text-decoration: none;
+}
+
+.heart {
+    width: 35px;
+    height: 35px;
+    position: relative;
+    margin: auto;
+}
+
+.heart button {
+    background-color: white;
+    color: #337ab7;
+    border: none;
+    outline: none;
+    font-size: 35px;
+}
+
+.heart button .red {
+    color: red;
+}
+
+.descr button{
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    background:#f3f3f3;
+    font-size: 16px;
+}
+
+.descr{
+    display:none;
+    margin-left:auto;
+    padding:10px;
+    background:#f3f3f3;
+    height:auto;
+    -moz-box-shadow:0 5px 5px rgba(0,0,0,0.3);
+    -webkit-box-shadow:0 5px 5px rgba(0,0,0,0.3);
+    box-shadow:0 5px 5px rgba(0,0,0,0.3);
+}
+
+.descr a {
+    display: block;
+    margin: auto;
+}
+
+.heart:hover .descr {
+    display:block;
+    position:absolute;
+    top:40px;
+    z-index:9999;
+    width: 300px;;
 }
 
 .post .button {

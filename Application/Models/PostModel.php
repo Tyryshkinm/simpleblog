@@ -83,5 +83,18 @@ class PostModel extends model
         $searchedTitles = $this->sth->fetchAll(PDO::FETCH_ASSOC);
         return $searchedTitles;
     }
+
+    public function likedPostsByUser($userId, $data)
+    {
+        $query = "SELECT post_id FROM likes WHERE user_id = $userId";
+        $this->executeQuery($query);
+        $likedPostsIds = $this->sth->fetchAll(PDO::FETCH_COLUMN);
+        for ($i = 0; $i < count($data); $i++)
+        {
+            $post[$i] = $data[$i]['id'];
+        }
+        $_SESSION['likedPosts'] = array_intersect($likedPostsIds, $post);
+        $_SESSION['countLikesOnPage'] = count($data);
+    }
 }
 

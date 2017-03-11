@@ -7,6 +7,10 @@ class PostController extends Controller
         if (isset($_GET['page']) and !isset($_GET['amt'])) {
             $currentPage = $_GET['page'];
             $data = $this->postModel->postOutput($currentPage, $lastPage, $amt = 10);
+            if (isset($_SESSION['loggedUser']))
+            {
+                $this->postModel->likedPostsByUser($_SESSION['userId'], $data);
+            }
             $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
         }
@@ -14,18 +18,30 @@ class PostController extends Controller
         if (isset($_GET['page']) and  isset($_GET['amt'])) {
             $currentPage = $_GET['page'];
             $data = $this->postModel->postOutput($currentPage, $lastPage, $amt = $_GET['amt']);
+            if (isset($_SESSION['loggedUser']))
+            {
+                $this->postModel->likedPostsByUser($_SESSION['userId'], $data);
+            }
             $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
         }
 
         if (!isset($_GET['page']) and isset($_GET['amt'])) {
             $data = $this->postModel->postOutput($currentPage = 1, $lastPage, $amt = $_GET['amt']);
+            if (isset($_SESSION['loggedUser']))
+            {
+                $this->postModel->likedPostsByUser($_SESSION['userId'], $data);
+            }
             $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
         }
 
         if (!isset($_GET['page']) and  !isset($_GET['amt'])) {
             $data = $this->postModel->postOutput($currentPage = 1, $lastPage, $amt = 10);
+            if (isset($_SESSION['loggedUser']))
+            {
+                $this->postModel->likedPostsByUser($_SESSION['userId'], $data);
+            }
             $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
         }
@@ -134,5 +150,10 @@ class PostController extends Controller
         } else {
             $this->view->generateView('TemplateView.php', 'SearchView.php');
         }
+    }
+
+    public function liked()
+    {
+        echo "123";
     }
 }

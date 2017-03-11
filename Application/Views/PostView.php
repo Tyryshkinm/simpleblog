@@ -6,7 +6,7 @@
                 <?=$data['firstName'] . ' ' . $data['secondName'];?></a><br>
         </div>
         <div class="date">
-            <b>Date: </b><?=$data['date'];?><br><br>
+            <b>Date: </b><?=$data['date'];?>
         </div>
     </div>
     <?=$data['text']?><br>
