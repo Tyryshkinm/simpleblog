@@ -1,3 +1,4 @@
+var counter = 0;
 $(document).ready(function () {
     $('span.heartbutton').on('click', function () {
         $(this).toggleClass('red');
@@ -10,11 +11,15 @@ $(document).ready(function () {
                 postId: postId
             },
             success: function (data) {
-                $('div.wholiked').text(data);
+                if (data == 1) {
+                    $('div.heart:hover .descr').css('visibility', 'hidden');
+                } else {
+                    $('div.heart:hover .descr').css('visibility', 'visible');
+                    $('div.wholiked').text(data);
+                }
             }
         });
     });
-    var counter = 0;
     $('span.viewmore').on('click', function () {
         var postId = $(this).attr('id');
         counter++;
@@ -27,14 +32,21 @@ $(document).ready(function () {
                 viewmore: counter
             },
             success: function (data) {
-                $('div.wholiked').text(data);
+                countData = data.split(" ").length;
+                if (countData < 5 + 10 * counter) {
+                    $('div.wholiked').text(data);
+                    $('span.viewmore').css('display', 'none');
+                } else {
+                    $('div.wholiked').text(data);
+                    $('span.viewmore').css('display', 'block');
+                }
             }
         })
     });
 });
 
 $(document).ready(function () {
-    $('span.heartbutton').mouseover(function () {
+    $('span.heartbutton').mouseenter(function () {
         var postId = $(this).attr('id');
         $.ajax({
             url: '../../Assets/ajax/liked.php',
@@ -44,8 +56,20 @@ $(document).ready(function () {
                 postId: postId
             },
             success: function (data) {
-                $('div.wholiked').text(data);
+                if (data == 1) {
+                    $('div.heart:hover .descr').css('visibility', 'hidden');
+                } else {
+                    $('div.heart:hover .descr').css('visibility', 'visible');
+                    $('div.wholiked').text(data);
+                }
             }
         })
-    })
+    });
+});
+
+$(document).ready(function () {
+    $('div.descr').mouseleave(function () {
+        $('span.viewmore').css('display', 'block');
+        counter = 0;
+    });
 });

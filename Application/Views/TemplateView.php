@@ -5,11 +5,11 @@
     <title>SimpleBlog</title>
     <link rel="stylesheet" href="../../Assets/css/styles.css" />
     <script
-            src="https://code.jquery.com/jquery-3.1.1.js"
+            src="https:\\code.jquery.com\jquery-3.1.1.js"
             integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
             crossorigin="anonymous">
     </script>
-    <script src="../../Assets/js/likes.js"></script>
+    <script src="..\..\Assets\js\likes.js"></script>
     <link rel="stylesheet" href="../../Assets/bootstrap-3.3.2-dist/css/bootstrap.css">
     <script src="../../Assets/bootstrap-3.3.2-dist/js/bootstrap.js" type="text/javascript"></script>
 </head>

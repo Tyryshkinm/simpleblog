@@ -25,7 +25,7 @@ switch ($_POST['action']):
         $model->executeQuery($query4);
         $data = $model->sth->fetchAll(PDO::FETCH_ASSOC);
         if (empty($data)) {
-            echo NULL;
+            echo 1;
         } else {
             foreach ($data as $row)
             {
@@ -46,7 +46,7 @@ switch ($_POST['action']):
         $model->executeQuery($query2);
         $data = $model->sth->fetchAll(PDO::FETCH_ASSOC);
         if (empty($data)) {
-            echo NULL;
+            echo 1;
         } else {
             foreach ($data as $row)
             {
