@@ -96,5 +96,18 @@ class PostModel extends model
         $_SESSION['likedPosts'] = array_intersect($likedPostsIds, $post);
         $_SESSION['countLikesOnPage'] = count($data);
     }
+    public function likedPosts($data)
+    {
+        $query = "SELECT post_id FROM likes";
+        $this->executeQuery($query);
+        $likedPosts = $this->sth->fetchAll(PDO::FETCH_COLUMN);
+        for ($i = 0; $i < count($data); $i++)
+        {
+            $post[$i] = $data[$i]['id'];
+        }
+        //$likedPosts = array_intersect($likedPosts, $post, true);
+        //var_dump($likedPosts);
+        return $likedPosts;
+    }
 }
 

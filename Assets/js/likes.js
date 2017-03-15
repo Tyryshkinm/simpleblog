@@ -1,27 +1,42 @@
 var counter = 0;
 $(document).ready(function () {
-    $('span.heartbutton').on('click', function () {
-        $(this).toggleClass('red');
-        var postId = $(this).attr('id');
+    $('div.post > div > div > button').on('click', function () {
+        var postId = $('span.heartbutton', this).attr('id');
         $.ajax({
             url: '../../Assets/ajax/liked.php',
             method: 'POST',
             data: {
                 action: 'clickOnHeart',
-                postId: postId
+                postId: postId,
+                dataType: 'text',
+                async: false
             },
             success: function (data) {
+                countData = data.split(" ").length - 2;
+                Data = data.split(" ");
+                Data = Data.splice(0, 5);
+                Data = Data.join(' ');
+                if (countData < 5 && data != 2) {
+                    $('div.post > div > div > div > button > span').css('display', 'none');
+                } else if (countData > 5 && data !=2)
+                {
+                    $('div.post > div > div > div > button > span').css('display', 'block');
+                }
                 if (data == 1) {
-                    $('div.heart:hover .descr').css('visibility', 'hidden');
+                    $('div.heart:hover .descr').css('display', 'none');
+                    $('#' + postId).toggleClass('red');
+                } else if (data == 2) {
+
                 } else {
-                    $('div.heart:hover .descr').css('visibility', 'visible');
-                    $('div.wholiked').text(data);
+                    $('div.heart:hover .descr').css('display', 'block');
+                    $('div.wholiked').text(Data);
+                    $('#' + postId).toggleClass('red');
                 }
             }
         });
     });
-    $('span.viewmore').on('click', function () {
-        var postId = $(this).attr('id');
+    $('div.post > div > div > div > button').on('click', function () {
+        var postId = $('span.viewmore', this).attr('id');
         counter++;
         $.ajax({
             url: '../../Assets/ajax/liked.php',
@@ -29,16 +44,22 @@ $(document).ready(function () {
             data: {
                 action: 'overHeart',
                 postId: postId,
-                viewmore: counter
+                viewmore: counter,
+                dataType: 'text',
+                async: false
             },
             success: function (data) {
-                countData = data.split(" ").length;
-                if (countData < 5 + 10 * counter) {
-                    $('div.wholiked').text(data);
-                    $('span.viewmore').css('display', 'none');
+                countData = data.split(" ").length - 2;
+                countLikes = 5 +10*counter;
+                Data = data.split(" ");
+                Data = Data.splice(0, countLikes);
+                Data = Data.join(' ');
+                if (countData < countLikes) {
+                    $('div.wholiked').text(Data);
+                    $('div.post > div > div > div > button > span').css('display', 'none');
                 } else {
-                    $('div.wholiked').text(data);
-                    $('span.viewmore').css('display', 'block');
+                    $('div.wholiked').text(Data);
+                    $('div.post > div > div > div > button > span').css('display', 'block');
                 }
             }
         })
@@ -46,21 +67,29 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    $('span.heartbutton').mouseenter(function () {
-        var postId = $(this).attr('id');
+    $('div.post > div > div > button').mouseenter(function () {
+        var postId = $('span.heartbutton', this).attr('id');
         $.ajax({
             url: '../../Assets/ajax/liked.php',
             method: 'POST',
             data: {
                 action: 'overHeart',
-                postId: postId
+                postId: postId,
+                dataType: 'text',
+                async: false
             },
             success: function (data) {
+                countData = data.split(" ").length - 2;
+                if (countData < 5) {
+                    $('div.post > div > div > div > button > span').css('display', 'none');
+                }
+                Data = data.split(" ");
+                Data = Data.splice(0, 5);
+                Data = Data.join(' ');
                 if (data == 1) {
-                    $('div.heart:hover .descr').css('visibility', 'hidden');
                 } else {
-                    $('div.heart:hover .descr').css('visibility', 'visible');
-                    $('div.wholiked').text(data);
+                    $('div.wholiked').text(Data);
+                    $('div.heart:hover .descr').css('display', 'block');
                 }
             }
         })
@@ -68,8 +97,10 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    $('div.descr').mouseleave(function () {
-        $('span.viewmore').css('display', 'block');
+    $('div.heart, div.descr').mouseleave(function () {
+        $('div.post > div > div > div > button > span').css('display', 'block');
+        $('div.descr').css('display', 'none');
         counter = 0;
     });
 });
+

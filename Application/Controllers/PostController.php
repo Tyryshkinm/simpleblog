@@ -10,6 +10,7 @@ class PostController extends Controller
             if (isset($_SESSION['loggedUser']))
             {
                 $this->postModel->likedPostsByUser($_SESSION['userId'], $data);
+                $this->postModel->likedPosts($data);
             }
             $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
@@ -21,6 +22,7 @@ class PostController extends Controller
             if (isset($_SESSION['loggedUser']))
             {
                 $this->postModel->likedPostsByUser($_SESSION['userId'], $data);
+                $this->postModel->likedPosts($data);
             }
             $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
@@ -31,6 +33,7 @@ class PostController extends Controller
             if (isset($_SESSION['loggedUser']))
             {
                 $this->postModel->likedPostsByUser($_SESSION['userId'], $data);
+                $this->postModel->likedPosts($data);
             }
             $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
@@ -41,6 +44,7 @@ class PostController extends Controller
             if (isset($_SESSION['loggedUser']))
             {
                 $this->postModel->likedPostsByUser($_SESSION['userId'], $data);
+                $this->postModel->likedPosts($data);
             }
             $this->view->generateView('TemplateView.php', 'PostMainView.php', $data, $this->view->msgError);
             $this->view->generatePagination('PaginationView.php', $currentPage, $lastPage, $url = NULL, $amt);
@@ -150,10 +154,5 @@ class PostController extends Controller
         } else {
             $this->view->generateView('TemplateView.php', 'SearchView.php');
         }
-    }
-
-    public function liked()
-    {
-        echo "123";
     }
 }

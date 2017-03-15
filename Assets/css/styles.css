@@ -176,7 +176,6 @@ footer {
 }
 
 .descr{
-    display:none;
     margin-left:auto;
     padding:10px;
     background:#f3f3f3;
@@ -184,6 +183,10 @@ footer {
     -moz-box-shadow:0 5px 5px rgba(0,0,0,0.3);
     -webkit-box-shadow:0 5px 5px rgba(0,0,0,0.3);
     box-shadow:0 5px 5px rgba(0,0,0,0.3);
+    display:none;
+    position: absolute;
+    top:25px;
+    width: 250px;
 }
 
 .descr a {
@@ -193,15 +196,6 @@ footer {
 
 .viewmore {
     display: block;
-}
-
-.heart:hover .descr {
-    visibility: hidden;
-    display:block;
-    position:absolute;
-    top:40px;
-    z-index:9999;
-    width: 300px;;
 }
 
 .post .button {

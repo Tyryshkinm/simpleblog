@@ -82,8 +82,7 @@ class UserController extends Controller
 
     public function logout()
     {
-        unset($_SESSION['loggedUser']);
-        unset($_SESSION['userId']);
+        unset($_SESSION);
         unset($_COOKIE[session_name()]);
         session_regenerate_id();
         session_destroy();
