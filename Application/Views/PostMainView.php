@@ -5,13 +5,13 @@
                 <div class="title">
                     <a class="h2" href="/post/<?=$post['id'];?>/view"><?=$post['title'];?></a><br>
                 </div>
-
                 <div class="heart">
                     <?php if (isset($_SESSION['likedPosts']) and (in_array($post['id'], $_SESSION['likedPosts']))):?>
                         <button>
                             <span class="heartbutton red" id="<?php echo $post['id'];?>">❤</span>
                         </button>
-                    <?php else:?>
+                    <?php elseif ((!isset($_SESSION['loggedUser']) and (in_array($post['id'], $likedPosts)))
+                        or (isset($_SESSION['loggedUser']))):?>
                         <button>
                             <span class="heartbutton" id="<?php echo $post['id'];?>">❤</span>
                         </button>
@@ -23,7 +23,6 @@
                         </button>
                     </div>
                 </div>
-
             </div>
             <div class="content">
                 <div class="authorAndDate">

@@ -11,6 +11,15 @@ class UserModel extends Model
         return $user;
     }
 
+    public function emailCheck($data)
+    {
+        $newEmail = $data['email'];
+        $query = "SELECT email FROM users WHERE email = '$newEmail'";
+        $this->executeQuery($query);
+        $email = $this -> sth -> fetch(PDO::FETCH_ASSOC);
+        return $email;
+    }
+
     public function userCheckEmail($email)
     {
         $query = "SELECT email FROM users WHERE email = '$email'";

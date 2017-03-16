@@ -22,15 +22,22 @@ switch ($_POST['action']):
                 $model->executeQuery($query3);
             }
             $limit = 6;
-            $query4 = "SELECT username FROM likes INNER JOIN users ON user_id = users.id WHERE post_id = $postId LIMIT $limit";
+            $query4 = "SELECT username, user_id FROM likes INNER JOIN users ON user_id = users.id WHERE post_id = $postId LIMIT $limit";
             $model->executeQuery($query4);
             $data = $model->sth->fetchAll(PDO::FETCH_ASSOC);
+            for ($i = 0; $i < $limit; $i++)
+            {
+                if (isset($data[$i]['username'])) {
+                    $whoLikes[$i] = '<a href="/user/' . $data[$i]['user_id'] . '">' . $data[$i]['username'] . '</a>' . ',';
+                    $data[$i]['username'] = $whoLikes[$i];
+                }
+            }
             if (empty($data)) {
                 echo 1;
             } else {
                 foreach ($data as $row)
                 {
-                    echo $row['username'] . ' ';
+                    echo $row['username'];
                 }
             }
         } else {
@@ -46,15 +53,22 @@ switch ($_POST['action']):
             $count = $_POST['viewmore'];
             $limit = $limit + $count * 10;
         }
-        $query2 = "SELECT username FROM likes INNER JOIN users ON user_id = users.id WHERE post_id = $postId LIMIT $limit";
+        $query2 = "SELECT username, user_id FROM likes INNER JOIN users ON user_id = users.id WHERE post_id = $postId LIMIT $limit";
         $model->executeQuery($query2);
         $data = $model->sth->fetchAll(PDO::FETCH_ASSOC);
+        for ($i = 0; $i < $limit; $i++)
+        {
+            if (isset($data[$i]['username'])) {
+                $whoLikes[$i] = '<a href="/user/' . $data[$i]['user_id'] . '">' . $data[$i]['username'] . '</a>' . ',';
+                $data[$i]['username'] = $whoLikes[$i];
+            }
+        }
         if (empty($data)) {
             echo 1;
         } else {
             foreach ($data as $row)
             {
-                echo $row['username'] . ' ';
+                echo $row['username'];
             }
         }
         break;

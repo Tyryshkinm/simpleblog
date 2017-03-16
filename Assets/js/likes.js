@@ -12,13 +12,13 @@ $(document).ready(function () {
                 async: false
             },
             success: function (data) {
-                countData = data.split(" ").length - 2;
-                Data = data.split(" ");
+                countData = data.split(",").length - 2;
+                Data = data.split(",");
                 Data = Data.splice(0, 5);
                 Data = Data.join(' ');
                 if (countData < 5 && data != 2) {
                     $('div.post > div > div > div > button > span').css('display', 'none');
-                } else if (countData > 5 && data !=2)
+                } else if (countData >= 5 && data !=2)
                 {
                     $('div.post > div > div > div > button > span').css('display', 'block');
                 }
@@ -26,10 +26,9 @@ $(document).ready(function () {
                     $('div.heart:hover .descr').css('display', 'none');
                     $('#' + postId).toggleClass('red');
                 } else if (data == 2) {
-
                 } else {
                     $('div.heart:hover .descr').css('display', 'block');
-                    $('div.wholiked').text(Data);
+                    $('div.wholiked').html(Data);
                     $('#' + postId).toggleClass('red');
                 }
             }
@@ -49,16 +48,16 @@ $(document).ready(function () {
                 async: false
             },
             success: function (data) {
-                countData = data.split(" ").length - 2;
-                countLikes = 5 +10*counter;
-                Data = data.split(" ");
+                countData = data.split(",").length - 2;
+                countLikes = 5 + 10 * counter;
+                Data = data.split(",");
                 Data = Data.splice(0, countLikes);
                 Data = Data.join(' ');
                 if (countData < countLikes) {
-                    $('div.wholiked').text(Data);
+                    $('div.wholiked').html(Data);
                     $('div.post > div > div > div > button > span').css('display', 'none');
                 } else {
-                    $('div.wholiked').text(Data);
+                    $('div.wholiked').html(Data);
                     $('div.post > div > div > div > button > span').css('display', 'block');
                 }
             }
@@ -79,16 +78,16 @@ $(document).ready(function () {
                 async: false
             },
             success: function (data) {
-                countData = data.split(" ").length - 2;
+                countData = data.split(",").length - 2;
                 if (countData < 5) {
                     $('div.post > div > div > div > button > span').css('display', 'none');
                 }
-                Data = data.split(" ");
+                Data = data.split(",");
                 Data = Data.splice(0, 5);
                 Data = Data.join(' ');
                 if (data == 1) {
                 } else {
-                    $('div.wholiked').text(Data);
+                    $('div.wholiked').html(Data);
                     $('div.heart:hover .descr').css('display', 'block');
                 }
             }

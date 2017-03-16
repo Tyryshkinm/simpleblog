@@ -98,15 +98,14 @@ class PostModel extends model
     }
     public function likedPosts($data)
     {
-        $query = "SELECT post_id FROM likes";
+        $query = "SELECT DISTINCT post_id FROM likes ORDER BY post_id";
         $this->executeQuery($query);
         $likedPosts = $this->sth->fetchAll(PDO::FETCH_COLUMN);
         for ($i = 0; $i < count($data); $i++)
         {
             $post[$i] = $data[$i]['id'];
         }
-        //$likedPosts = array_intersect($likedPosts, $post, true);
-        //var_dump($likedPosts);
+        $likedPosts = array_intersect($likedPosts, $post);
         return $likedPosts;
     }
 }

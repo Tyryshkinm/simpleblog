@@ -166,11 +166,10 @@ footer {
 .heart button .red {
     color: red;
 }
-
-.descr button{
-    width: 100%;
-    margin: auto;
+div.post > div > div > div > button{
+    width: 100px;
     text-align: center;
+    margin-left: 25%;
     background:#f3f3f3;
     font-size: 16px;
 }
@@ -186,11 +185,12 @@ footer {
     display:none;
     position: absolute;
     top:25px;
+    left: 25px;
     width: 250px;
 }
 
 .descr a {
-    display: block;
+    display: inline-block;
     margin: auto;
 }
 
