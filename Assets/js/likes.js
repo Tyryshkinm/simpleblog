@@ -96,10 +96,9 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    $('div.heart, div.descr').mouseleave(function () {
+    $('div.heart, div.descr, div.post > div > div > button, div.pencil').mouseleave(function () {
         $('div.post > div > div > div > button > span').css('display', 'block');
         $('div.descr').css('display', 'none');
         counter = 0;
     });
 });
-

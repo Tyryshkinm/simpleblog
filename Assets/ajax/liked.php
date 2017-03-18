@@ -32,7 +32,7 @@ switch ($_POST['action']):
                     $data[$i]['username'] = $whoLikes[$i];
                 }
             }
-            if (empty($data)) {
+            if (empty($data) or !isset($data)) {
                 echo 1;
             } else {
                 foreach ($data as $row)

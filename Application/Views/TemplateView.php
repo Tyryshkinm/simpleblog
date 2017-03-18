@@ -10,6 +10,7 @@
             crossorigin="anonymous">
     </script>
     <script src="..\..\Assets\js\likes.js"></script>
+    <script src="../../Assets/js/eidtPostAjax.js"></script>
     <link rel="stylesheet" href="../../Assets/bootstrap-3.3.2-dist/css/bootstrap.css">
     <script src="../../Assets/bootstrap-3.3.2-dist/js/bootstrap.js" type="text/javascript"></script>
 </head>

@@ -144,7 +144,7 @@ footer {
     margin: 10px;
 }
 
-.heart {
+.heart, .pencil{
     display: flex;
     position: relative;
     width: 35px;
@@ -155,7 +155,11 @@ footer {
 
 }
 
-.heart button {
+.pencil {
+    margin-left: 15px;
+}
+
+.heart button, .pencil button {
     background-color: white;
     color: #337ab7;
     border: none;
@@ -184,6 +188,7 @@ div.post > div > div > div > button{
     box-shadow:0 5px 5px rgba(0,0,0,0.3);
     display:none;
     position: absolute;
+    z-index: 9999;
     top:25px;
     left: 25px;
     width: 250px;
@@ -196,6 +201,35 @@ div.post > div > div > div > button{
 
 .viewmore {
     display: block;
+}
+
+.editPostAjax {
+    width: 1000px;
+    margin: auto;
+}
+
+.editPostAjax .postEdit {
+    background-color: seashell;
+    width: 1000px;
+    border: 1px solid chocolate;
+    border-radius: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.editPostAjax .postEdit input[type="text"] {
+    border: 1px solid chocolate;
+    width: 900px;
+    margin-top: 20px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.editPostAjax .postEdit textarea {
+    border: 1px solid chocolate;
+    height: auto;
+    width: 900px;
+    margin-bottom: 5px;
 }
 
 .post .button {
