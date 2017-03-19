@@ -108,5 +108,48 @@ class PostModel extends model
         $likedPosts = array_intersect($likedPosts, $post);
         return $likedPosts;
     }
+
+    public function clickOnPencil($postId)
+    {
+        $query = "SELECT title, text FROM posts WHERE id = $postId";
+        $this -> executeQuery($query);
+        $dataPost = $this->sth->fetch(PDO::FETCH_ASSOC);
+        return $dataPost;
+    }
+
+    public function clickOnSave($postId, $title, $text)
+    {
+        $query2 = "UPDATE posts SET title = '$title', text = '$text', date = date WHERE id = $postId";
+        $this->executeQuery($query2);
+    }
+
+    public function clickOnHeart($postId, $userId, &$limit)
+    {
+        $query1 = "SELECT id FROM likes WHERE user_id = $userId AND  post_id = $postId";
+        $this->executeQuery($query1);
+        $issetLike = $this->sth->fetch(PDO::FETCH_ASSOC);
+        $issetLike = $issetLike['id'];
+        if (!empty($issetLike)) {
+            $query2 = "DELETE FROM likes WHERE id = $issetLike";
+            $this->executeQuery($query2);
+        } else {
+            $query3 = "INSERT INTO likes (post_id, user_id) "
+                . "VALUES ('$postId', '$userId')";
+            $this->executeQuery($query3);
+        }
+        $limit = 6;
+        $query4 = "SELECT username, user_id FROM likes INNER JOIN users ON user_id = users.id WHERE post_id = $postId LIMIT $limit";
+        $this->executeQuery($query4);
+        $data = $this->sth->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
+    }
+
+    public function overHeart($postId, $limit)
+    {
+        $query = "SELECT username, user_id FROM likes INNER JOIN users ON user_id = users.id WHERE post_id = $postId LIMIT $limit";
+        $this->executeQuery($query);
+        $data = $this->sth->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
+    }
 }
 

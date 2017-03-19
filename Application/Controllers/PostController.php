@@ -155,4 +155,77 @@ class PostController extends Controller
             $this->view->generateView('TemplateView.php', 'SearchView.php');
         }
     }
+
+    public function clickOnPencil()
+    {
+        $postId = $_POST['postId'];
+        $dataPost = $this->postModel->clickOnPencil($postId);
+        $dataText = $dataPost['text'];
+        $dataTitle = $dataPost['title'];
+        echo   '<div class="postEdit">
+                    <input type="text" id="editTitle' . $postId . '" maxlength="50" name="postTitle" value="' . $dataTitle . '" placeholder="Title of Post" required /></br>
+                    <textarea id="editText' . $postId . '" name="postText" cols="25" rows="10" placeholder="Text of Post" required >' . $dataText . '</textarea></br>
+                    <button class="btn btn-primary">Save</button>
+                </div>';
+    }
+
+    public function clickOnSave()
+    {
+        $postId = $_POST['postId'];
+        $title = $_POST['title'];
+        $text = $_POST['text'];
+        $this->postModel->clickOnSave($postId, $title, $text);
+    }
+
+    public function clickOnHeart()
+    {
+        if (isset($_SESSION['userId'])) {
+            $postId = $_POST['postId'];
+            $userId = $_SESSION['userId'];
+            $data = $this -> postModel -> clickOnHeart($postId, $userId, $limit);
+            for ($i = 0; $i < $limit; $i++)
+            {
+                if (isset($data[$i]['username'])) {
+                    $whoLikes[$i] = '<a href="/user/' . $data[$i]['user_id'] . '">' . $data[$i]['username'] . '</a>' . ',';
+                    $data[$i]['username'] = $whoLikes[$i];
+                }
+            }
+            if (empty($data) or !isset($data)) {
+                echo 1;
+            } else {
+                foreach ($data as $row)
+                {
+                    echo $row['username'];
+                }
+            }
+        } else {
+            echo 2;
+        }
+    }
+
+    public function overHeart()
+    {
+        $postId = $_POST['postId'];
+        $limit = 6;
+        if (isset($_POST['viewmore'])) {
+            $count = $_POST['viewmore'];
+            $limit = $limit + $count * 10;
+        }
+        $data = $this->postModel->overHeart($postId, $limit);
+        for ($i = 0; $i < $limit; $i++)
+        {
+            if (isset($data[$i]['username'])) {
+                $whoLikes[$i] = '<a href="/user/' . $data[$i]['user_id'] . '">' . $data[$i]['username'] . '</a>' . ',';
+                $data[$i]['username'] = $whoLikes[$i];
+            }
+        }
+        if (empty($data)) {
+            echo 1;
+        } else {
+            foreach ($data as $row)
+            {
+                echo $row['username'];
+            }
+        }
+    }
 }

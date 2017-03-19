@@ -2,13 +2,10 @@ $(document).ready(function () {
     $('div.pencil').on('click', function () {
         var postId = $('span.pencilbutton', this).attr('id');
         $.ajax({
-            url: '../../Assets/ajax/editPostAjax.php',
+            url: '/post/clickOnPencil',
             method: 'POST',
             data: {
-                action: 'clickOnPencil',
-                postId: postId,
-                dataType: 'text',
-                async: false
+                postId: postId
             },
             success: function (data) {
                 dataPost = data;
@@ -17,14 +14,12 @@ $(document).ready(function () {
                     var title = document.getElementById("editTitle"+postId).value;
                     var text = document.getElementById("editText" + postId).value;
                     $.ajax({
-                        url: '../../Assets/ajax/editPostAjax.php',
+                        url: '/post/clickOnSave',
                         method: 'POST',
                         data: {
-                            action: 'clickOnSave',
                             postId: postId,
                             title: title,
-                            text: text,
-                            async: false
+                            text: text
                         },
                         success: function () {
                             $('#edit' + postId).html(data).slideToggle("slow");

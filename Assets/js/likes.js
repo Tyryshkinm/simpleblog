@@ -3,13 +3,10 @@ $(document).ready(function () {
     $('div.post > div > div > button').on('click', function () {
         var postId = $('span.heartbutton', this).attr('id');
         $.ajax({
-            url: '../../Assets/ajax/liked.php',
+            url: '/post/clickOnHeart',
             method: 'POST',
             data: {
-                action: 'clickOnHeart',
-                postId: postId,
-                dataType: 'text',
-                async: false
+                postId: postId
             },
             success: function (data) {
                 countData = data.split(",").length - 2;
@@ -38,14 +35,11 @@ $(document).ready(function () {
         var postId = $('span.viewmore', this).attr('id');
         counter++;
         $.ajax({
-            url: '../../Assets/ajax/liked.php',
+            url: '/post/overHeart',
             method: 'POST',
             data: {
-                action: 'overHeart',
                 postId: postId,
-                viewmore: counter,
-                dataType: 'text',
-                async: false
+                viewmore: counter
             },
             success: function (data) {
                 countData = data.split(",").length - 2;
@@ -69,13 +63,10 @@ $(document).ready(function () {
     $('div.post > div > div > button').mouseenter(function () {
         var postId = $('span.heartbutton', this).attr('id');
         $.ajax({
-            url: '../../Assets/ajax/liked.php',
+            url: '/post/overHeart',
             method: 'POST',
             data: {
-                action: 'overHeart',
-                postId: postId,
-                dataType: 'text',
-                async: false
+                postId: postId
             },
             success: function (data) {
                 countData = data.split(",").length - 2;
@@ -96,7 +87,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    $('div.heart, div.descr, div.post > div > div > button, div.pencil').mouseleave(function () {
+    $('div.heart, div.descr, div.pencil').mouseleave(function () {
         $('div.post > div > div > div > button > span').css('display', 'block');
         $('div.descr').css('display', 'none');
         counter = 0;
