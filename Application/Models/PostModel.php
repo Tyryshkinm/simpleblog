@@ -88,24 +88,32 @@ class PostModel extends model
     {
         $query = "SELECT post_id FROM likes WHERE user_id = $userId";
         $this->executeQuery($query);
-        $likedPostsIds = $this->sth->fetchAll(PDO::FETCH_COLUMN);
-        for ($i = 0; $i < count($data); $i++)
-        {
-            $post[$i] = $data[$i]['id'];
+        $likedPosts = $this->sth->fetchAll(PDO::FETCH_COLUMN);
+        if (count($data) != 7) {
+            for ($i = 0; $i < count($data); $i++)
+            {
+                $post[$i] = $data[$i]['id'];
+            }
+            $likedPosts = array_intersect($likedPosts, $post);
+            $_SESSION['likedPosts'] = array_intersect($likedPosts, $post);
+        } else {
+            $_SESSION['likedPosts'] = in_array($data['id'], $likedPosts);
         }
-        $_SESSION['likedPosts'] = array_intersect($likedPostsIds, $post);
-        $_SESSION['countLikesOnPage'] = count($data);
     }
     public function likedPosts($data)
     {
         $query = "SELECT DISTINCT post_id FROM likes ORDER BY post_id";
         $this->executeQuery($query);
         $likedPosts = $this->sth->fetchAll(PDO::FETCH_COLUMN);
-        for ($i = 0; $i < count($data); $i++)
-        {
-            $post[$i] = $data[$i]['id'];
+        if (count($data) != 7) {
+            for ($i = 0; $i < count($data); $i++)
+            {
+                $post[$i] = $data[$i]['id'];
+            }
+            $likedPosts = array_intersect($likedPosts, $post);
+        } else {
+            $likedPosts = in_array($data['id'], $likedPosts);
         }
-        $likedPosts = array_intersect($likedPosts, $post);
         return $likedPosts;
     }
 

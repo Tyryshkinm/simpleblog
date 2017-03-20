@@ -3,20 +3,21 @@
         <div class="title">
             <a class="h2" href="/post/<?=$data['id'];?>/view"><?=$data['title'];?></a><br>
         </div>
-        <?php if (isset($_SESSION['loggedUser'])):?>
+        <?php if (isset($likedPosts)):?>
             <div class="heart">
-                <?php if (in_array($data['id'], $_SESSION['likedPosts'])):?>
+                <?php if (isset($_SESSION['likedPosts']) and ($data['id'] == $_SESSION['likedPosts'])):?>
                     <button>
                         <span class="heartbutton red" id="<?php echo $data['id'];?>">❤</span>
                     </button>
-                <?php else:?>
+                <?php elseif ((!isset($_SESSION['loggedUser']) and ($data['id'] == $likedPosts))
+                    or (isset($_SESSION['loggedUser']))):?>
                     <button>
                         <span class="heartbutton" id="<?php echo $data['id'];?>">❤</span>
                     </button>
                 <?php endif;?>
-                <div class="descr" hidden>
+                <div class="descr">
                     <div class="wholiked"></div>
-                    <button>
+                    <button id="<?php echo $data['id'];?>">
                         <span class="viewmore" id="<?php echo $data['id'];?>">view more</span>
                     </button>
                 </div>

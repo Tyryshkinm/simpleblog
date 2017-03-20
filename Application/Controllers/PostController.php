@@ -54,8 +54,13 @@ class PostController extends Controller
     public function view()
     {
         $data = $this->postModel->postPageOutput();
+        $likedPosts = $this->postModel->likedPosts($data);
+        if (isset($_SESSION['loggedUser']))
+        {
+            $this->postModel->likedPostsByUser($_SESSION['userId'], $data);
+        }
         if (is_array($data)) {
-            $this->view->generateView('TemplateView.php', 'PostView.php', $data);
+            $this->view->generateView('TemplateView.php', 'PostView.php', $data, $this->view->msgError, $likedPosts);
         } else {
             $this->view->generateView('TemplateView.php', '404View.php');
         }
@@ -160,21 +165,23 @@ class PostController extends Controller
     {
         $postId = $_POST['postId'];
         $dataPost = $this->postModel->clickOnPencil($postId);
-        $dataText = $dataPost['text'];
-        $dataTitle = $dataPost['title'];
-        echo   '<div class="postEdit">
-                    <input type="text" id="editTitle' . $postId . '" maxlength="50" name="postTitle" value="' . $dataTitle . '" placeholder="Title of Post" required /></br>
-                    <textarea id="editText' . $postId . '" name="postText" cols="25" rows="10" placeholder="Text of Post" required >' . $dataText . '</textarea></br>
-                    <button class="btn btn-primary">Save</button>
-                </div>';
+        require_once(realpath($_SERVER["DOCUMENT_ROOT"]) . '/Application/Views/PostEditAjax.php');
     }
 
     public function clickOnSave()
     {
         $postId = $_POST['postId'];
-        $title = $_POST['title'];
-        $text = $_POST['text'];
-        $this->postModel->clickOnSave($postId, $title, $text);
+        if (!empty(trim($_POST['title']))) {
+            if (!empty(trim($_POST['text']))) {
+                $title = trim($_POST['title']);
+                $text = trim($_POST['text']);
+                $this->postModel->clickOnSave($postId, $title, $text);
+            } else {
+               //нужно сделать проверку на пустое поле
+            }
+        } else {
+            //нужно сделать проверку на пустое поле
+        }
     }
 
     public function clickOnHeart()
